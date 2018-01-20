@@ -1,0 +1,36 @@
+{
+  "name": "dsbm",
+  "version": "0.0.1",
+  "description": "(Client-Side)A command-line tool for submitting your course project.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SamuelXing/Submitting.git"
+  },
+  "keywords": [
+    "decentralize-app",
+    "command-line",
+    "tool"
+  ],
+  "author": "SamuelXing",
+  "license": "MIT",
+  "bin": {
+    "dsbm": "./index.js"
+  },
+  "bugs": {
+    "url": "https://github.com/SamuelXing/Submitting/issues"
+  },
+  "homepage": "https://github.com/SamuelXing/Submitting#readme",
+  "dependencies": {
+    "commander": "^2.13.0",
+    "truffle": "^4.0.5",
+    "truffle-contract": "^3.0.2",
+    "web3": "^0.20.4"
+  }
+}
