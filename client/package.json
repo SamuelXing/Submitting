@@ -31,6 +31,11 @@
     "commander": "^2.13.0",
     "truffle": "^4.0.5",
     "truffle-contract": "^3.0.2",
-    "web3": "^0.20.4"
+    "web3": "^0.20.4",
+    "ws": "^4.0.0"
+  },
+  "devDependencies": {
+    "co": "^4.6.0",
+    "co-prompt": "^1.0.0"
   }
 }
