@@ -1,5 +1,8 @@
 .idea
 node_modules
-.dsbm
+client/.dsbm
 package-lock.json
 server/uploaded
+client/project1.zip
+client/project1/
+

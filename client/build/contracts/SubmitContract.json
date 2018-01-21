@@ -1941,8 +1941,13 @@
       "events": {},
       "links": {},
       "address": "0xcb8e86f0600f5f7affa946fe8ead0d79e94c2aba"
+    },
+    "1516511817143": {
+      "events": {},
+      "links": {},
+      "address": "0xcdb9baafe01b4430b25acb23154800d105b45ae4"
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-01-21T02:34:10.198Z"
+  "updatedAt": "2018-01-21T05:17:30.074Z"
 }

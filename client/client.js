@@ -16,8 +16,8 @@ const datadir = './.dsbm';
 
 let provider = new web3.providers.HttpProvider("http://localhost:8545");
 
-let account_address = '0x3dcbeeaed1a7e806a9f12f71c42e5963bd6d14f8';
-let contract_address = '0xcb8e86f0600f5f7affa946fe8ead0d79e94c2aba';
+let account_address = '0xb61aa3e70ee2628402ecce3cabdaf8417c3cfbaa';
+let contract_address = '0xcdb9baafe01b4430b25acb23154800d105b45ae4';
 
 let sc = new contract(require("./build/contracts/SubmitContract.json"));
 
@@ -84,7 +84,7 @@ async function submit(filename) {
     {
         let instance = await getContract();
         let result = await instance.submit(filename, hashStr, {from: account_address});
-        let record = await '' + result.tx + '  ' + hashStr;
+        let record = await '' + result.tx + '  ' + hashStr + '\n';
         console.log(record);
         await fs.appendFile(datadir +'/'+ 'log.txt', record, function (err) {
         if (err) throw err;
@@ -145,14 +145,21 @@ function Uploader(url, cb)
 
 
 Uploader.prototype.sendFile = function (file, cb) {
-    if(this.ws.readyState !== Websocket.OPEN) throw new Error('Not connected');
+    if(this.ws.readyState !== Websocket.OPEN)
+        throw new Error('Not connected');
     if(this.sending)
     {
         this.sendQueue.push(arguments);
         return;
     }
+    // construct msg head
+    if(!fs.existsSync(datadir+'/personal.json'))
+        throw new Error('has to run init first');
+    let dataStream = fs.readFileSync(datadir+'/personal.json');
+    let jsonData = JSON.parse(dataStream);
+    let remotePath = jsonData.name + '_' + jsonData.suid;
     // file data
-    let fileData = {name: file, path: "p1/"+file };
+    let fileData = {name: file, path: remotePath+"/"+file };
     this.sending = fileData;
     this.ws.send(JSON.stringify(fileData));
     try{
@@ -172,10 +179,10 @@ Uploader.prototype.close = function () {
 // socket communication
 // check dsbm.json information, construct message, network config
 function upload(filename) {
-    let path = __dirname + '/' + filename;
+    let localPath = __dirname + '/' + filename;
     try {
         // file esisted or not, extension check.
-        if (!fs.existsSync(path))
+        if (!fs.existsSync(localPath))
             throw new Error("file does not exist");
         if (path.extname(filename) != '.zip')
             throw new Error("has to be a /'.zip/' file");
@@ -186,11 +193,6 @@ function upload(filename) {
         console.log('ERROR: ' + err);
     }
 
-    console.log(path);
-    if(!fs.existsSync(path))
-    {
-        console.log("Error: file dose not exist")
-    }
 
     let uploader = new Uploader('ws://localhost:8080', function(){
         if(filename === '.')
