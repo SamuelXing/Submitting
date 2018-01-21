@@ -2,3 +2,4 @@
 node_modules
 .dsbm
 package-lock.json
+server/uploaded

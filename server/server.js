@@ -11,11 +11,11 @@ const cursor = ansi(process.stdout);
 
 function BandwidthSampler (ws, interval) {
     interval = interval || 2000;
-    var previousByteCount = 0;
-    var self = this;
-    var intervalId = setInterval(function () {
-        var byteCount = ws.bytesReceived;
-        var bytesPerSec = (byteCount - previousByteCount) / (interval / 1000);
+    let previousByteCount = 0;
+    let self = this;
+    let intervalId = setInterval(function () {
+        let byteCount = ws.bytesReceived;
+        let bytesPerSec = (byteCount - previousByteCount) / (interval / 1000);
         previousByteCount = byteCount;
         self.emit('sample', bytesPerSec);
     }, interval);
@@ -28,8 +28,8 @@ util.inherits(BandwidthSampler, events.EventEmitter);
 function makePathForFile (filePath, prefix, cb) {
     if (typeof cb !== 'function') throw new Error('callback is required');
     filePath = path.dirname(path.normalize(filePath)).replace(/^(\/|\\)+/, '');
-    var pieces = filePath.split(/(\\|\/)/);
-    var incrementalPath = prefix;
+    let pieces = filePath.split(/(\\|\/)/);
+    let incrementalPath = prefix;
     function step (error) {
         if (error) return cb(error);
         if (pieces.length === 0) return cb(null, incrementalPath);
@@ -45,21 +45,21 @@ function makePathForFile (filePath, prefix, cb) {
 cursor.eraseData(2).goto(1, 1);
 app.use(express.static(path.join(__dirname, '/public')));
 
-var clientId = 0;
-var wss = new WebSocketServer({server: server});
+let clientId = 0;
+let wss = new WebSocketServer({server: server});
 wss.on('connection', function (ws) {
-    var thisId = ++clientId;
+    let thisId = ++clientId;
     cursor.goto(1, 4 + thisId).eraseLine();
     console.log('Client #%d connected', thisId);
 
-    var sampler = new BandwidthSampler(ws);
+    let sampler = new BandwidthSampler(ws);
     sampler.on('sample', function (bps) {
         cursor.goto(1, 4 + thisId).eraseLine();
         console.log('WebSocket #%d incoming bandwidth: %d MB/s', thisId, Math.round(bps / (1024 * 1024)));
     });
 
-    var filesReceived = 0;
-    var currentFile = null;
+    let filesReceived = 0;
+    let currentFile = null;
     ws.on('message', function (data) {
         if (typeof data === 'string') {
             currentFile = JSON.parse(data);
