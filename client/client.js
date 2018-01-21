@@ -1,4 +1,10 @@
 #!/usr/bin/env node
+// TODO: handle path for different OS
+// TODO: easy deploy blockchain
+// TODO: log file format
+// TODO: error check
+// TODO: command line prompt
+
 const web3 = require('web3');
 const fs = require('fs');
 const path = require('path');
@@ -10,14 +16,13 @@ const datadir = './.dsbm';
 
 let provider = new web3.providers.HttpProvider("http://localhost:8545");
 
-let account_address = "0x67dc50638a81f44f21613ca5c684f8aaf74d8737";
-let contract_address = "0x5c5f713742cae8778b8b9d344ed8f076243299e8";
+let account_address = '0x3dcbeeaed1a7e806a9f12f71c42e5963bd6d14f8';
+let contract_address = '0xcb8e86f0600f5f7affa946fe8ead0d79e94c2aba';
 
 let sc = new contract(require("./build/contracts/SubmitContract.json"));
 
 sc.setProvider(provider);
 
-//var localHash =  CryptoJS.SHA256(strData);
 function getContract() {
     return sc.at(contract_address);
 }
@@ -31,6 +36,7 @@ function init(studentName, suid, email, account_address)
     if(!fs.existsSync(datadir))
     {
         fs.mkdirSync(datadir);
+        console.log(datadir);
     }
     // generate dsbm json
     let info = {
@@ -41,12 +47,20 @@ function init(studentName, suid, email, account_address)
     };
     let jInfo = JSON.stringify(info, null, '  ');
     console.log(jInfo);
-    fs.writeFileSync(datadir+'/'+'personal.json', jInfo, function(err){
+    fs.writeFile(datadir+'/'+'personal.json', jInfo, function(err){
        if(err) {
            console.log(err);
        } else {
-           console.log('ok.');
+           console.log(datadir+'/personal.json');
        }
+    });
+    // create log.txt
+    fs.close(fs.openSync(datadir + '/' + 'log.txt', 'w'), function (err) {
+        if(err) {
+            console.log(err);
+        } else {
+            console.log(datadir+'log.txt');
+        }
     });
 }
 
@@ -55,7 +69,7 @@ function init(studentName, suid, email, account_address)
 async function submit(filename) {
     try {
         // file esisted or not, extension check.
-        if (!fs.existsSync(__dirname + "/" + filename))
+        if (!fs.existsSync(__dirname + '/' + filename))
             throw new Error("file does not exist");
     }
     catch (err)
@@ -63,12 +77,23 @@ async function submit(filename) {
         // if err, process
         console.log('ERROR: ' + err);
     }
-    let data = fs.ReadStream(__dirname + "/" + filename);
+    let data = fs.ReadStream(__dirname + '/' + filename);
     let hashValue = CryptoJS.SHA256(data);
-    let instance = await getContract();
-    let result = await instance.submit(filename, hashValue, {from: account_address});
-    console.log(result);
-    // if success, write (transaction num, hashValue) to record file
+    let hashStr = '0x' + hashValue.toString(CryptoJS.enc.Hex);
+    try
+    {
+        let instance = await getContract();
+        let result = await instance.submit(filename, hashStr, {from: account_address});
+        let record = await '' + result.tx + '  ' + hashStr;
+        console.log(record);
+        await fs.appendFile(datadir +'/'+ 'log.txt', record, function (err) {
+        if (err) throw err;
+    });
+    }
+    catch(err)
+    {
+        console.log("ERROR: "+ err);
+    }
 }
 
 function Uploader(url, cb)
@@ -185,7 +210,6 @@ function upload(filename) {
         console.log('100% done ' + filename + ' sent.');
     };
 }
-//submit("p1", "hash2297");
 
 module.exports = {init, submit, upload};
 

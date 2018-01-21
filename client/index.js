@@ -15,12 +15,14 @@ program
 
 // start node - setup account - migrate contract
 // create a directory to keep the (transaction, hash) pair
+// data cannot be empty
 program
     .command('init <name> <suid> <email> <account_address>')
     .description('Init envrionment')
     .action((name, suid, email, account_address) => {
        init(name, suid, email, account_address);
-    });
+    })
+    .parse(process.argv);
 
 program
     .command('create <project>')
@@ -37,9 +39,7 @@ program
 program
     .command('submit <filename>')
     .description('submit file')
-    .action(function(){
-        console.log("Submitted");
-    })
+    .action((filename) => {submit(filename)})
     .parse(process.argv);
 
 program
@@ -53,4 +53,4 @@ program
     .command('start')
     .description('start app')
 
-program.parse(process.argv)
+program.parse(process.argv);

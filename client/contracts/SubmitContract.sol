@@ -6,7 +6,7 @@ contract SubmitContract
     mapping(bytes32=>bytes32[]) projects;
     
     
-    function submit(bytes32 name, bytes32 hashValue) public
+    function submit(bytes32 name, bytes32 hashValue) public returns(bytes32)
     {
         if(projects[name].length == 0)
         {
@@ -20,6 +20,8 @@ contract SubmitContract
             }
             projects[name].push(hashValue);
         }
+				
+				return hashValue;
     }
     
     function delPrj(bytes32 name) public
