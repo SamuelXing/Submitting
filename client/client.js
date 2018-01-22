@@ -16,8 +16,8 @@ const datadir = './.dsbm';
 
 let provider = new web3.providers.HttpProvider("http://localhost:8545");
 
-let account_address = '0xb61aa3e70ee2628402ecce3cabdaf8417c3cfbaa';
-let contract_address = '0xcdb9baafe01b4430b25acb23154800d105b45ae4';
+let account_address = '0x02c49cceb02eb8bbf6f594210a0cabd2aaa38616';
+let contract_address = '0x44cb03f3d7c6930bc922b86bc869f85ffba9b81c';
 
 let sc = new contract(require("./build/contracts/SubmitContract.json"));
 

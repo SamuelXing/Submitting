@@ -1,8 +1,8 @@
+#!/usr/bin/env node
 /**
  * Created by samuel on 1/19/18.
  */
 
-// console.log('Welcome to submitting!');
 const program = require('commander');
 const co = require('co');
 const prompt = require('co-prompt');
