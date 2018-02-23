@@ -9,7 +9,7 @@ if (typeof web3 !== 'undefined') {
   var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 }
 
-
+// get transaction by txn number
 async function getTxn(txnNum){
 	try{
 		var txn = await web3.eth.getTransaction(txnNum);
@@ -24,12 +24,10 @@ async function getTxn(txnNum){
 function readLog(log){
 	try{
 		let rst = [];
-		let logData = fs.readFileSync(log, 'utf-8');
-		// regex to split log file
-		let lines = logData.split(/^(.*?)\n/);
+		let lines = fs.readFileSync(log, 'utf-8').split('\n');
 		for(let i in lines)
 		{
-			if(lines[i] === "") continue
+			if(lines[i] === '') continue
 			rst.push(lines[i].trim().split(/\s+/));
 		}
 		return rst;
@@ -56,34 +54,28 @@ function readInfo(infoFile)
 // verify log data
 async function _verify(log, person)
 {	
-	var verified = false;
+	let verified = true;
+	let report = [];
 	if(log.length === 0 || person === null) return verified;
 	for(let i in log)
 	{
 		let txn = await getTxn(log[i][0]);
-		if(txn === null || txn.from !==  person.account || txn.input.indexOf(log[i][1].slice(2,)) === -1){
+		if(txn === null || txn.from.toUpperCase() !=  person.account_address.toUpperCase() || txn.input.indexOf(log[i][1].slice(2,)) === -1){
 			verified = false;
-			return verified
 		}
+		report.push(''+log[i]+'\t'+verified+'\n');
 	}
-	verified = true;
-	return verified;	
+	return report;	
 }
 
-function verify(logFile, infoFile)
+async function verify(logFile, infoFile)
 {
 	// read log.txt
 	let logData = readLog(logFile);
 	// read personal info file
 	let person = readInfo(infoFile);
-	if(_verify(logData, person))
-	{
-		console.log('data verified');
-	}
-	else
-	{
-		console.log('not pass');
-	}
+	let report = await _verify(logData, person);
+	console.log(report)
 }
 
 verify('log.txt', 'personal.json')

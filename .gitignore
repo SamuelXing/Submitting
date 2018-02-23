@@ -7,3 +7,4 @@ client/project1.zip
 client/project1/
 server/log.txt
 server/personal.json
+server/client.js

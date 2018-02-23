@@ -59,7 +59,7 @@ function init(studentName, suid, email, account_address)
         if(err) {
             console.log(err);
         } else {
-            console.log(datadir+'log.txt');
+            console.log(datadir+'/'+'log.txt');
         }
     });
 }
@@ -74,7 +74,7 @@ async function submit(filename) {
         let info = fs.readFileSync(datadir + '/' + 'personal.json', 'utf-8');
         let infoObj = JSON.parse(info)
         // retrieve personal info
-        let data = fs.ReadStream(__dirname + '/' + filename);
+        let data = fs.readFileSync(__dirname + '/' + filename, 'utf-8');
         let hashValue = CryptoJS.SHA256(data);
         let hashStr = '0x' + hashValue.toString(CryptoJS.enc.Hex);
         let instance = await getContract();
