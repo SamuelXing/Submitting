@@ -16,15 +16,15 @@ const datadir = './.dsbm';
 
 let provider = new web3.providers.HttpProvider("http://localhost:8545");
 
-let account_address = '0x02c49cceb02eb8bbf6f594210a0cabd2aaa38616';
-let contract_address = '0x44cb03f3d7c6930bc922b86bc869f85ffba9b81c';
+// let account_address = '0x6753136cec2577fa2fecf3d10a62c378c0ed1e41';
+// let contract_address = '0x17037d532ed8bdd4e8ded9314a74f96f9fd1c33f';
 
 let sc = new contract(require("./build/contracts/SubmitContract.json"));
 
 sc.setProvider(provider);
 
-function getContract() {
-    return sc.at(contract_address);
+async function getContract() {
+    return await sc.deployed()
 }
 
 // init the environment
@@ -68,31 +68,28 @@ function init(studentName, suid, email, account_address)
 //check hash value, error check, zip(option),
 async function submit(filename) {
     try {
-        // file esisted or not, extension check.
+        // file esisted or not, extension check, __dirname: get current dir
         if (!fs.existsSync(__dirname + '/' + filename))
             throw new Error("file does not exist");
+        let info = fs.readFileSync(datadir + '/' + 'personal.json', 'utf-8');
+        let infoObj = JSON.parse(info)
+        // retrieve personal info
+        let data = fs.ReadStream(__dirname + '/' + filename);
+        let hashValue = CryptoJS.SHA256(data);
+        let hashStr = '0x' + hashValue.toString(CryptoJS.enc.Hex);
+        let instance = await getContract();
+        let result = await instance.submit(filename, hashStr, {from: infoObj.account_address});
+        let record = '' + result.tx + '  ' + hashStr + '\n';
+        console.log('Transaction\tFile Hash');
+        console.log(record);
+        await fs.appendFile(datadir +'/'+ 'log.txt', record, function (err) {
+            if (err) throw err;
+        });
     }
     catch (err)
     {
         // if err, process
         console.log('ERROR: ' + err);
-    }
-    let data = fs.ReadStream(__dirname + '/' + filename);
-    let hashValue = CryptoJS.SHA256(data);
-    let hashStr = '0x' + hashValue.toString(CryptoJS.enc.Hex);
-    try
-    {
-        let instance = await getContract();
-        let result = await instance.submit(filename, hashStr, {from: account_address});
-        let record = await '' + result.tx + '  ' + hashStr + '\n';
-        console.log(record);
-        await fs.appendFile(datadir +'/'+ 'log.txt', record, function (err) {
-        if (err) throw err;
-    });
-    }
-    catch(err)
-    {
-        console.log("ERROR: "+ err);
     }
 }
 

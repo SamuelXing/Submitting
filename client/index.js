@@ -43,6 +43,10 @@ program
     .parse(process.argv);
 
 program
+    .command('reset <name>')
+    .description('reset options')
+
+program
     .command('upload <filename>')
     .description('upload file to server')
     .action(filename => {

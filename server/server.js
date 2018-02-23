@@ -23,6 +23,7 @@ function BandwidthSampler (ws, interval) {
         clearInterval(intervalId);
     });
 }
+
 util.inherits(BandwidthSampler, events.EventEmitter);
 
 function makePathForFile (filePath, prefix, cb) {
@@ -47,6 +48,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 
 let clientId = 0;
 let wss = new WebSocketServer({server: server});
+
 wss.on('connection', function (ws) {
     let thisId = ++clientId;
     cursor.goto(1, 4 + thisId).eraseLine();
