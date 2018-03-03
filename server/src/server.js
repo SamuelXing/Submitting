@@ -7,6 +7,7 @@ const app = express();
 const server = require('http').Server(app);
 const events = require('events');
 const ansi = require('ansi');
+const _ = require('lodash');
 const cursor = ansi(process.stdout);
 
 function BandwidthSampler (ws, interval) {
@@ -45,6 +46,7 @@ function makePathForFile (filePath, prefix, cb) {
 
 cursor.eraseData(2).goto(1, 1);
 app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, '/uploaded')));
 
 let clientId = 0;
 let wss = new WebSocketServer({server: server});
@@ -108,3 +110,51 @@ fs.mkdir(path.join(__dirname, '/uploaded'), function () {
         console.log('Listening on http://localhost:8080');
     });
 });
+
+app.get('/', function(req,res){
+	res.send('Hello from server');
+});
+
+app.get('/users/:name', function(req, res){
+	res.send('hello, ' + req.params.name);
+});
+
+app.get('/files', function(req, res)
+{
+    let currentDir  = path.join(__dirname, '/uploaded');
+    let query = req.query.path || '';
+    if(query) cur = path.join(dir, query);
+    console.log('browsing ', currentDir);
+    fs.readdir(currentDir, function(err, files)
+    {
+        if(err)
+        {
+            throw err;
+        }
+        let data = [];
+        files.forEach(function (file)
+        {
+            try
+            {
+                let isDirectory = fs.statSync(path.join(currentDir,file)).isDirectory();
+                if(isDirectory)
+                {
+                    data.push({ Name : file, IsDirectory: true, Path : path.join(query, file)});
+                } else 
+                {
+                    let ext = path.extname(file);
+                    data.push({ Name : file, Ext : ext, IsDirectory: false, Path : path.join(query, file) });
+                }
+            }catch(e)
+            {
+                console.log(e);
+            }
+        });
+        data = _.sortBy(data, function(f) { return f.Name });
+        res.json(data);
+    });
+});
+
+
+
+

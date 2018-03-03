@@ -12,8 +12,12 @@
   "dependencies": {
     "ansi": "^0.3.1",
     "express": "^4.16.2",
+    "lodash": "^4.17.5",
     "truffle": "^4.0.6",
     "web3": "^1.0.0-beta.30",
     "ws": "^4.0.0"
+  },
+  "devDependencies": {
+    "supervisor": "^0.12.0"
   }
 }

@@ -68,6 +68,7 @@ async function _verify(log, person)
 	return report;	
 }
 
+// verify
 async function verify(logFile, infoFile)
 {
 	// read log.txt
@@ -78,6 +79,11 @@ async function verify(logFile, infoFile)
 	console.log(report)
 }
 
-verify('log.txt', 'personal.json')
+// ------<test>-----
+//verify('log.txt', 'personal.json')
+
+module.exports = verify
+
+
 
 

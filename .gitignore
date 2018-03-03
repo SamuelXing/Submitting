@@ -2,9 +2,9 @@
 node_modules
 client/.dsbm
 package-lock.json
-server/uploaded
+server/src/uploaded
 client/project1.zip
 client/project1/
-server/log.txt
-server/personal.json
-server/client.js
+server/src/log.txt
+server/src/personal.json
+server/src/client.js
