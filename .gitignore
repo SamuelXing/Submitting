@@ -8,3 +8,5 @@ client/project1/
 server/src/log.txt
 server/src/personal.json
 server/src/client.js
+client/static/
+client/templates/
