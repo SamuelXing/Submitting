@@ -8,8 +8,13 @@ const server = require('http').Server(app);
 const events = require('events');
 const ansi = require('ansi');
 const _ = require('lodash');
+const routes = require('./routes');
+const config = require('config-lite')(__dirname);
+const session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 const cursor = ansi(process.stdout);
 
+// WebSocket
 function BandwidthSampler (ws, interval) {
     interval = interval || 2000;
     let previousByteCount = 0;
@@ -45,8 +50,6 @@ function makePathForFile (filePath, prefix, cb) {
 }
 
 cursor.eraseData(2).goto(1, 1);
-app.use(express.static(path.join(__dirname, '/public')));
-app.use(express.static(path.join(__dirname, '/uploaded')));
 
 let clientId = 0;
 let wss = new WebSocketServer({server: server});
@@ -106,54 +109,71 @@ fs.mkdir(path.join(__dirname, '/uploaded'), function () {
     // ignore errors, most likely means directory exists
     console.log('Uploaded files will be saved to %s/uploaded.', __dirname);
     console.log('Remember to wipe this directory if you upload lots and lots.');
-    server.listen(8080, function () {
+    server.listen(config.port, function () {
         console.log('Listening on http://localhost:8080');
     });
 });
 
-app.get('/', function(req,res){
-	res.send('Hello from server');
-});
+// express
+app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, '/uploaded')));
 
-app.get('/users/:name', function(req, res){
-	res.send('hello, ' + req.params.name);
-});
+// set template engine
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
-app.get('/files', function(req, res)
-{
-    let currentDir  = path.join(__dirname, '/uploaded');
-    let query = req.query.path || '';
-    if(query) cur = path.join(dir, query);
-    console.log('browsing ', currentDir);
-    fs.readdir(currentDir, function(err, files)
-    {
-        if(err)
-        {
-            throw err;
-        }
-        let data = [];
-        files.forEach(function (file)
-        {
-            try
-            {
-                let isDirectory = fs.statSync(path.join(currentDir,file)).isDirectory();
-                if(isDirectory)
-                {
-                    data.push({ Name : file, IsDirectory: true, Path : path.join(query, file)});
-                } else 
-                {
-                    let ext = path.extname(file);
-                    data.push({ Name : file, Ext : ext, IsDirectory: false, Path : path.join(query, file) });
-                }
-            }catch(e)
-            {
-                console.log(e);
-            }
-        });
-        data = _.sortBy(data, function(f) { return f.Name });
-        res.json(data);
-    });
-});
+// session middleware
+app.use(session({
+    name: config.session.key,
+    secret: config.session.secret,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: config.session.maxAge
+    },
+    store: new MongoStore({
+        url: config.mongodb
+    })
+}));
+
+//router
+routes(app);
+
+// app.get('/files', function(req, res)
+// {
+//     let currentDir  = path.join(__dirname, '/uploaded');
+//     let query = req.query.path || '';
+//     if(query) cur = path.join(dir, query);
+//     console.log('browsing ', currentDir);
+//     fs.readdir(currentDir, function(err, files)
+//     {
+//         if(err)
+//         {
+//             throw err;
+//         }
+//         let data = [];
+//         files.forEach(function (file)
+//         {
+//             try
+//             {
+//                 let isDirectory = fs.statSync(path.join(currentDir,file)).isDirectory();
+//                 if(isDirectory)
+//                 {
+//                     data.push({ Name : file, IsDirectory: true, Path : path.join(query, file)});
+//                 } else 
+//                 {
+//                     let ext = path.extname(file);
+//                     data.push({ Name : file, Ext : ext, IsDirectory: false, Path : path.join(query, file) });
+//                 }
+//             }catch(e)
+//             {
+//                 console.log(e);
+//             }
+//         });
+//         data = _.sortBy(data, function(f) { return f.Name });
+//         res.json(data);
+//     });
+// });
 
 
 
