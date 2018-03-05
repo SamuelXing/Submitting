@@ -12,7 +12,11 @@
           <a href="#" class="btn-u btn-brd btn-brd-hover btn-u-dark btn-u-xs pull-right">View All</a>
         </div>
         <div class="panel-body">
-          Panel content
+          <div class="mCSB_container scroll-pane">
+              <% blocks.forEach(function (block) { %>
+                <%- include('components/block', { block: block }) %>
+              <% }) %>
+          </div>
         </div>
       </div>
     </div>
@@ -26,7 +30,11 @@
           <a href="#" class="btn-u btn-brd btn-brd-hover btn-u-dark btn-u-xs pull-right">View All</a>
         </div>
         <div class="panel-body">
-          Panel content
+            <div class="mCSB_container scroll-pane">
+                <% txns.forEach(function (txn) { %>
+                  <%- include('components/txn', { txn: txn }) %>
+                <% }) %>
+            </div>
         </div>
       </div>
     </div>
