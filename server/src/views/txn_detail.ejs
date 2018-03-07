@@ -1,0 +1,73 @@
+<%- include('header') %>
+<div class="inner cover">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class = "panel panel-profile no-bg">
+                    <div class="panel-heading">
+                        <h2 class = "panel-title heading-sm pull-left">
+                        <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+                        Transaction Information
+                        </h2>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">txHash:</th>
+                                    <td><%= txn.hash %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Block Hash:</th>
+                                    <td><%= txn.blockHash %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Block Number:</th>
+                                    <td><a href="/blocks/<%= txn.blockNumber %>"t><%= txn.blockNumber %></a></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Nonce:</th>
+                                        <td><%= txn.nonce %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Txn Index:</th>
+                                    <td><%= txn.transactionIndex %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">From:</th>
+                                    <td><%= txn.from %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">To:</th>
+                                    <td><%= txn.to %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Value:</th>
+                                    <td><%= txn.value %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Gas:</th>
+                                    <td><%= txn.gasLimit %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Gas Price:</th>
+                                    <td><%= txn.gasPrice %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Input:</th>
+                                    <td>
+                                        <div style="width: 300px; height: 60px; word-wrap: break-word;">
+                                            <%= txn.input %>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+    
+    <%- include('footer') %>

@@ -1,0 +1,74 @@
+<%- include('header') %>
+
+<div class="inner cover">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class = "panel panel-profile no-bg">
+                <div class="panel-heading">
+                    <h2 class = "panel-title heading-sm pull-left">
+                    <span class="glyphicon glyphicon-bookmark" aria-hidden="true"></span>
+                    Block Information
+                    </h2>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Block Number:</th>
+                                <td><%= block.number %></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">TimeStamp:</th>
+                                <td><%= block.timestamp %></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Transactions:</th>
+                                <td><%= block.transactions.length %> transactions in this block.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Hash</th>
+                                <td><%= block.hash %></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Parent Hash:</th>
+                                <td><%= block.parentHash %></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">ShaU3ncles:</th>
+                                <td><%= block.sha3Uncles %></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Difficulty:</th>
+                                <td><%= block.difficulty %></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">TotalDifficulty:</th>
+                                <td><%= block.totalDifficulty %></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Size:</th>
+                                <td><%= block.size %></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Gas Limit:</th>
+                                <td><%= block.gasLimit %></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Gas Used:</th>
+                                <td><%= block.gasUsed %></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Nonce:</th>
+                                <td><%= block.nonce %></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
+
+<%- include('footer') %>

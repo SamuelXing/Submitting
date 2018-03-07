@@ -10,3 +10,4 @@ server/src/personal.json
 server/src/client.js
 client/static/
 client/templates/
+.idea

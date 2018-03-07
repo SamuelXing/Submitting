@@ -6,7 +6,7 @@
 a,
 a:focus,
 a:hover {
-  color: rgb(255, 255, 255);
+  color: #bbd;
 }
 
 /* Custom default button */
@@ -240,12 +240,12 @@ body {
   padding: 7px 10px 4px;
   border: 1px solid #fff;
 }
-
+/* 
 .block-detail-shortcut a,
 a:focus,
 a:hover {
   color: rgb(48, 142, 219);
-}
+} */
 
 /* Transaction */
 .profile-post
@@ -297,4 +297,10 @@ h3.heading-xs {
 {
 	height: auto;
 	max-height: 650px;
+}
+
+/* Tabel */
+.table
+{
+  text-align: left;
 }
