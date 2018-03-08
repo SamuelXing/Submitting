@@ -9,10 +9,13 @@ const events = require('events');
 const ansi = require('ansi');
 const _ = require('lodash');
 const routes = require('./routes');
+const flash = require('connect-flash');
 const config = require('config-lite')(__dirname);
 const session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
+const MongoStore = require('connect-mongo')(session);
 const cursor = ansi(process.stdout);
+
+process.setMaxListeners(0);
 
 // WebSocket
 function BandwidthSampler (ws, interval) {
@@ -135,6 +138,20 @@ app.use(session({
         url: config.mongodb
     })
 }));
+
+app.use(flash());
+
+app.use(require('express-formidable')({
+    keepExtensions: true // keep extension
+  }));
+
+// set template global variable
+app.use(function(req, res, next){
+    res.locals.user = req.session.user;
+    res.locals.success = req.flash('success').toString();
+    res.locals.error = req.flash('error').toString();
+    next();
+});
 
 //router
 routes(app);

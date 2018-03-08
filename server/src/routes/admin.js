@@ -4,7 +4,7 @@ const router = express.Router();
 
 // GET /signup
 router.get('/', function(req, res, next){
-    res.send('dummy');
+    res.render('admin');
 });
 
 

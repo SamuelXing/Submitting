@@ -12,9 +12,12 @@
   "dependencies": {
     "ansi": "^0.3.1",
     "config-lite": "^2.1.0",
+    "connect-flash": "^0.1.1",
     "connect-mongo": "^2.0.1",
+    "crypto-js": "^3.1.9-1",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
+    "express-formidable": "^1.0.0",
     "express-session": "^1.15.6",
     "lodash": "^4.17.5",
     "mongolass": "^4.1.3",

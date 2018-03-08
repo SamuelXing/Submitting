@@ -19,6 +19,10 @@ a:hover {
   border: 1px solid #fff;
 }
 
+.navbar {
+  margin-bottom: 0px;
+}
+
 /*
  * Base structure
  */
@@ -44,10 +48,9 @@ body {
   -webkit-box-shadow: inset 0 0 100px rgba(0,0,0,.5);
   box-shadow: inset 0 0 100px rgba(0,0,0,.5);
   margin-bottom: 60px;
-  /* padding: 60px 15px 0; */
+  padding: 60px 15px 0;
 }
 .site-wrapper-inner {
-  display: table-cell;
   vertical-align: top;
 }
 .cover-container {
@@ -303,4 +306,21 @@ h3.heading-xs {
 .table
 {
   text-align: left;
+}
+
+/* Form */
+.form_post
+{
+  text-align: left;
+}
+
+.form_post .form_group
+{
+  margin-bottom: 10px;
+}
+
+.form_post .form-control
+{
+  background-color: #333;
+  color: #bbd;
 }
