@@ -324,3 +324,22 @@ h3.heading-xs {
   background-color: #333;
   color: #bbd;
 }
+
+/* menu */
+.dropdown-menu>li>a{
+  color: #fff;
+}
+.open>.dropdown-menu
+{
+  background-color: #333;
+}
+
+.dropdown-menu
+{
+  border: 1px solid #fff;
+}
+
+.dropdown-menu>li>a:hover {
+  background-color: #333;
+  color: #fff;
+}

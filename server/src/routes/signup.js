@@ -72,7 +72,7 @@ router.post('/', checkNotLogin, function(req, res, next){
         user = result.ops[0];
         console.log(user);
         delete user.password;
-        // req.session.user = user;
+        req.session.user = user;
         req.flash('success', 'signup successfully');
         res.redirect('/home')
         // res.send('successfully');

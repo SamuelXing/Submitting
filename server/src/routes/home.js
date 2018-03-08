@@ -59,7 +59,7 @@ async function getTxn(hash)
 }
 
 // homepage
-router.get('/', checkNotLogin, async function(req, res, next){
+router.get('/', async function(req, res, next){
 	let blocks = [];
 	let txns = [];
 	let latest = await getLatestBlockNumber();

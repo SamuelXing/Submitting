@@ -1,6 +1,7 @@
 <%- include('header') %>
 
 <div class="inner cover">
+    <%- include('components/notification') %>
     <div class = "row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
@@ -11,31 +12,34 @@
                     </h2>
                 </div>
                 <div class="panel-body">
-                    <form class="form_post" method="post" enctype"multipart/from-data">
+                    <form class="form_post" method="post" enctype"multipart/form-data" action="/signin">
                         <div class="form-group">
                             <label for="username" class="col-md-2 control-label">Username</label>
                             <div class="col-md-10" style="margin-bottom: 10px;">
-                                <input type = "text" class="form-control" id = "username" placeholder="Username">
+                                <input type = "text" class="form-control" id = "username" name = "username" placeholder="Username">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="password" class="col-md-2 control-label">Password</label>
                             <div class="col-md-10" style="margin-bottom: 10px;">
-                                <input type="password" class="form-control" id = "password" placeholder="Password">
+                                <input type="password" class="form-control" id = "password" name = "password" placeholder="Password">
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox"> Remember me
+                                        <input type="checkbox" name = "remember"> Remember me
                                     </label>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-offset-2 col-md-10" style="margin-bottom: 10px;">
+                            <div class="col-md-offset-2 col-md-3" style="margin-bottom: 10px;">
                                 <button type="submit" class="btn btn-default">Submit</button>
+                            </div>
+                            <div class="col-md-offset-6" style="text-align:center">
+                                <p>Don't have an account? <a href="/signup">Sign up</a> now.</p>
                             </div>
                         </div>
                     </form>

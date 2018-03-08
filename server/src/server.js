@@ -141,6 +141,7 @@ app.use(session({
 
 app.use(flash());
 
+// form handling middleware
 app.use(require('express-formidable')({
     keepExtensions: true // keep extension
   }));
