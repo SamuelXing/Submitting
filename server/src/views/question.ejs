@@ -22,7 +22,11 @@
             </div>
         </div>
         <div class="col-md-8" id="piazza-main">
-                <%- include('components/question-post', {question: question}) %>
+            <div class="piazza-post">
+                <div class="scroll-pane">
+                    <%- include('components/question-post', {question: question}) %>
+                </div>
+            </div>
         </div>
     </div>
 </div>

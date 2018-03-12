@@ -423,3 +423,13 @@ h3.heading-xs {
 {
   display: table-cell;
 }
+
+.piazza-post
+{
+  padding-left: 10px;
+  padding-right: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border: 1px solid #fff;
+  
+}
