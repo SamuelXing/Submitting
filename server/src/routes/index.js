@@ -9,5 +9,6 @@ module.exports = function(app){
 	app.use('/transactions', require('./transactions'));
 	app.use('/blocks', require('./blocks'));
 	app.use('/home', require('./home'));
+	app.use('/piazza', require('./piazza'));
 	//app.use('/files', require('./files'));
 };

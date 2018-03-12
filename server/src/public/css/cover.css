@@ -343,3 +343,57 @@ h3.heading-xs {
   background-color: #333;
   color: #fff;
 }
+
+/* piazza */
+.row-left
+{
+  margin-top: 2px;
+  margin-bottom: 1px;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.row-right
+{
+  margin-top: 3px;
+  padding-left: 0px;
+}
+
+.sidebar-row
+{
+  border: 1px solid #fff;
+}
+
+.btn-default, .btn-default:hover, .btn-default:focus {
+  color: #333;
+  text-shadow: none;
+  background-color: #bbd;
+  border: 1px solid #fff;
+}
+
+/* The sidebar menu */
+.sidenav {
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 10px;
+  border: 1px solid #fff;
+}
+
+.question-shortcut
+{
+  border: 1px solid #fff;
+  margin-top: 5px;
+}
+
+.question-shortcut .panel-heading
+{
+  text-align: left;
+}
+
+.question-shortcut .panel-body
+{
+  text-align: left;
+  border-top: 1px solid #fff;
+}

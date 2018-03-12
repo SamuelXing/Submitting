@@ -1,0 +1,36 @@
+<%- include('header') %>
+
+<div class="inner cover">
+    <div class = "row">
+        <div class="col-md-4 sidenav">
+            <div class="row sidebar-row">
+                <div class="col-md-5 row-left">
+                    <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
+                        <strong>New Post</strong>
+                    </button>
+                </div>
+                <div class="col-md-7 row-right">
+                    <div class="search-bar">
+                        <input type = "text" name = "search" id = "search" placeholder=" search a post.....">
+                    </div>
+                </div>    
+            </div>
+            <div class="questions scroll-pane">
+                <% questions.forEach(function(question){ %>
+                    <%- include('components/question-content', {question: question}) %>
+                <% }) %>
+            </div>
+        </div>
+        <div class="col-md-8" id="piazza-main">
+            <div class="panel">
+
+            </div>
+            <div class="comments">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('footer') %>

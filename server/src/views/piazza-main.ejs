@@ -1,0 +1,15 @@
+<%- include('header') %>
+
+<div class="inner cover">
+    <!-- <%- include('components/notification') %> -->
+    <div class = "row">
+        <div class="col-md-4"></div>
+        <div class="col-md-8" id="piazza-main">
+            <% questions.forEach(function(question){ %>
+                <%- include('components/question-content', {question: question}) %>
+            <% }) %>
+        </div>
+    </div>
+</div>
+
+<%- include('footer') %>
