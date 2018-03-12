@@ -1,38 +1,28 @@
 <%- include('header') %>
-
 <div class="inner cover">
-    <%- include('components/notification') %>
     <div class = "row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
-            <div class="panel panel-profile no-bg">
-                <div class="panel-heading">
-                    <h2 class="panel-title heading-sm pull-left">
-                        New Post
-                    </h2>
+        <div class="col-md-4 sidenav">
+            <div class="row sidebar-row">
+                <div class="col-md-5 row-left">
+                    <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
+                        <a href="/piazza/create"><strong style="color:#333;">New Post</strong></a>
+                    </button>
                 </div>
-                <div class="panel-body">
-                    <form class="form_post" method="post" enctype="multipart/form-data" action="/piazza">
-                        <div class="form-group">
-                            <label for="title" class="col-md-2 control-label">Title</label>
-                            <div class="col-md-10" style="margin-bottom: 10px;">
-                                <input type = "text" class="form-control" name="title" id = "title" placeholder="Title">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="content" class="col-md-2 control-label">Content</label>
-                            <div class="col-md-10" style="margin-bottom: 10px;">
-                                <textarea type="text" class="form-control" name="content" id = "content" placeholder="New Post" rows="10"> </textarea>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-offset-2 col-md-10" style="margin-bottom: 10px;">
-                                <button type="submit" class="btn btn-default">Post</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                <div class="col-md-7 row-right">
+                    <div class="search-bar">
+                        <input type = "text" name = "search" id = "search" placeholder=" search a post.....">
+                    </div>
+                </div>    
             </div>
+            <div class="questions piazza-a scroll-pane">
+                <% questions.forEach(function(question){ %>
+                    <%- include('components/question-content', {question: question}) %>
+                <% }) %>
+            </div>
+        </div>
+        <div class="col-md-8" id="piazza-main">
+                <%- include('components/create-question') %>
         </div>
     </div>
 </div>

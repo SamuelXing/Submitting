@@ -1,5 +1,6 @@
 const marked = require('marked');
 const Question = require('../lib/mongo').Question;
+const AnswerModel = require('./answer');
 
 // convert content to html
 Question.plugin('contentToHtml',{
@@ -19,6 +20,33 @@ Question.plugin('contentToHtml',{
     }
 });
 
+// add answerCount
+Question.plugin('addAnswersCount', {
+    afterFind: function(questions)
+    {
+        return Promise.all(questions.map(function(question){
+            return AnswerModel.getAnswersCount(question._id)
+                .then(function(answersCount){
+                    question.answersCount = answersCount;
+                    return question;
+                });
+        }));
+    },
+
+    afterFindOne: function(question)
+    {
+        if(question)
+        {
+            return AnswerModel.getAnswersCount(question._id)
+                    .then(function(count){
+                        question.answersCount = count;
+                        return question;
+                    });
+        }
+        return question;
+    }
+});
+
 module.exports = {
     // Create a new post
     create: function create(question) {
@@ -30,6 +58,7 @@ module.exports = {
         return Question.findOne({_id: questionId})
                         .populate({path: 'author', model: 'User'})
                         .addCreatedAt()
+                        .addAnswersCount()
                         .contentToHtml()
                         .exec();
     },
@@ -47,6 +76,7 @@ module.exports = {
                         .populate({path:'author', model: 'User'})
                         .sort({_id: -1})
                         .addCreatedAt()
+                        .addAnswersCount()
                         .contentToHtml()
                         .exec();
     },
@@ -55,6 +85,18 @@ module.exports = {
     incPv: function incPv(questionId)
     {
         return Question.update({_id: questionId}, {$inc: {pv: 1}}).exec();
+    },
+
+    // del question by Id
+    delQuestionById: function delQuestionById(questionId, author)
+    {
+        return Question.remove({author: author, _id: questionId})
+                .exec()
+                .then(function(res){
+                    if(res.result.ok && res.result.n > 0 ){
+                        return AnswerModel.delAnswersByQuestiontId(questionId);
+                    }
+                })
     }
 };
 

@@ -1,9 +1,11 @@
-<div class="question-shortcut">
-    <div class="panel-heading" style="padding: 0px, 0px;">
-        <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-        <strong><%= question.title %></strong>
+<a href="/piazza/<%= question._id%>">
+    <div class="question-shortcut">
+        <div class="panel-heading" style="padding-top:3px; padding-bottom:0px;">
+            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+            <strong><%= question.title %></strong>
+        </div>
+        <div class="panel-body" style="padding-top:3px; padding-bottom:0px;">
+            <%- question.content %>
+        </div>
     </div>
-    <div class="panel-body" style="padding-top:0px; padding-bottom:0px;">
-        <%- question.content %>
-    </div>
-</div>
+</a>

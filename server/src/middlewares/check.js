@@ -1,3 +1,5 @@
+const QuestionModel = require('../models/question');
+
 module.exports = 
 {
 	checkLogin: function checkLogin(req, res, next)
@@ -21,5 +23,6 @@ module.exports =
 			return res.redirect('back');
 		}							
 		next();
-	}
+	},
+
 };

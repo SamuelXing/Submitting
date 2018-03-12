@@ -42,5 +42,15 @@ exports.Question = mongolass.model('Question', {
     pv: {type: 'number'}
 });
 
+exports.Answer = mongolass.model('Answer', {
+    author: {type: Mongolass.Types.ObjectId},
+    content: {type: 'string'},
+    questionId: {type: Mongolass.Types.ObjectId},
+    votes: {type: 'number'},
+    closed: {type: 'number', default: 1}
+})
+
 exports.User.index({username:1}, {unique: true}).exec();
 exports.Question.index({author: 1, _id: -1 }).exec();
+exports.Answer.index({questionId: 1, _id: 1}).exec(); // get all answers by questionId
+exports.Answer.index({author: 1, _id: 1}).exec(); // delete by user id and author id

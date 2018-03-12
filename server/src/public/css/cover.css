@@ -361,7 +361,8 @@ h3.heading-xs {
 
 .sidebar-row
 {
-  border: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  margin-bottom: 10px;
 }
 
 .btn-default, .btn-default:hover, .btn-default:focus {
@@ -396,4 +397,29 @@ h3.heading-xs {
 {
   text-align: left;
   border-top: 1px solid #fff;
+}
+
+.panel-footer-custom
+{
+  text-align:right; 
+  background-color:#bbd; 
+  border: 1px solid #fff;
+  color: #333;
+}
+
+.piazza-a a, a:focus, a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+.answer-row
+{
+  display: table;
+  width: 100%;
+  border: 1px, solid, #fff;
+}
+
+.answer-column
+{
+  display: table-cell;
 }

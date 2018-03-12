@@ -7,7 +7,7 @@
                 <div class="col-md-5 row-left">
                     <button type="button" class="btn btn-default btn-sm">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
-                        <strong>New Post</strong>
+                        <a href="/piazza/create"><strong style="color:#333;">New Post</strong></a>
                     </button>
                 </div>
                 <div class="col-md-7 row-right">
@@ -16,19 +16,14 @@
                     </div>
                 </div>    
             </div>
-            <div class="questions scroll-pane">
+            <div class="questions piazza-a scroll-pane">
                 <% questions.forEach(function(question){ %>
                     <%- include('components/question-content', {question: question}) %>
                 <% }) %>
             </div>
         </div>
         <div class="col-md-8" id="piazza-main">
-            <div class="panel">
-
-            </div>
-            <div class="comments">
-
-            </div>
+            <%- include('components/default-post') %>
         </div>
     </div>
 </div>

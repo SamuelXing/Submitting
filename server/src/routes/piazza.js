@@ -3,11 +3,12 @@ const router = express.Router();
 
 const checkLogin = require('../middlewares/check').checkLogin;
 const QuestionModel = require('../models/question');
+const AnswerModel = require('../models/answer');
 
 // GET /piazza?author = xxx
 router.get('/', function(req, res, next){
-    const author = req.query.author;
-    QuestionModel.getQuestions(author).then(function(questions){
+    QuestionModel.getQuestions("").then(function(questions){
+        req.session.questions = questions;
         res.render('piazza', {questions: questions});
     }).catch(next);
 });
@@ -54,25 +55,30 @@ router.post('/', checkLogin, function(req, res, next){
 });
 
 // GET /piazza/create
-router.get('/create', checkLogin, function(req, res, next){
-    res.render('create');
+router.get('/create', checkLogin, async function(req, res, next){
+    const questions = await QuestionModel.getQuestions("");
+    res.render('create', {questions: questions});
 });
 
 // GET /piazza/:questionID
-router.get('/:questionId', function(req, res, next){
+router.get('/:questionId',async function(req, res, next){
     const questionId = req.params.questionId;
-
+    const questions = await QuestionModel.getQuestions("");
     Promise.all([
         QuestionModel.getQuestionById(questionId),
+        AnswerModel.getAnswers(questionId),
         QuestionModel.incPv(questionId)
+        
     ])
     .then(function(result){
         const question = result[0];
+        const answers = result[1];
+        console.log(answers);
         if(!question){
-            throw new Error('this question does not exist');
+            throw new Error('this post does not exist');
         }
 
-        res.render('question', {question: question});
+        res.render('question', {questions: questions, question: question, answers: answers});
     }).catch(next);
 });
 
@@ -82,8 +88,23 @@ router.post('/:questionId/edit', checkLogin, function(req, res, next){
 });
 
 // POST /piazza/:questionId/comment
-router.post('/:questionId/comment', checkLogin, function(req, res, next){
-    res.send('dummy');
+router.post('/:questionId/answer', checkLogin, function(req, res, next){
+   const author = req.session.user._id;
+   const questionId = req.params.questionId;
+   const content = req.fields.content;
+   let answer = 
+   {
+        author: author,
+        content: content,
+        questionId: questionId,
+        votes: 0,
+        closed: 1
+   };
+
+   AnswerModel.create(answer).then(function(){
+       res.redirect('back');
+   }).catch(next);
+
 });
 
 // GET /piazza/:questionId/comment/edit
