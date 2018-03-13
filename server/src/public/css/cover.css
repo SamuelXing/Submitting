@@ -431,5 +431,30 @@ h3.heading-xs {
   padding-top: 15px;
   padding-bottom: 15px;
   border: 1px solid #fff;
-  
+}
+
+.user-info
+{
+  float: right;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.user-info >img,
+.user-info > p
+{
+  display: inline-block;
+}
+
+.answer-wrapper
+{
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 1px solid #fff;
+  margin-top: 10px;
+}
+
+.answer-content
+{
+  margin-top: 10px;
 }

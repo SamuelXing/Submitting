@@ -23,31 +23,51 @@
 </div>
 <div style="height: 20px"></div>
 <div class="answers">
-    <% answers.forEach(function(answer){ %>
-        <div class="answer-row">
-            <div class="col-md-2 answer-column">
-                <div class="vote-panel">
-                    <div class="up-vote">
-                        <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
-                    </div>
-                    <div class="votes">1</div>
-                    <div class="down-vote">
-                        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-                    </div>
-                    <div class="closed">
-
-                    </div>
-                </div>
+        <div class="panel panel-default" style="background-color: #333; margin-bottom: 0px;">
+            <div class="panel-heading" style="background-color: #bbd;">
+                <h3 class="panel-title" style="text-align:left">
+                    Answers
+                </h3>
             </div>
-            <div class="col-md-10 answer-column">
-                <div class="answer-panel">
-                    <div class="answer-content">
-                        <%- answer.content %>
-                    </div>
-                </div>
+            <div class="panel-body" style="text-align:left;">
+                    <% answers.forEach(function(answer){ %>
+                        <div class="answer-wrapper">
+                            <div class="answer-row">
+                                <div class="answer-column">
+                                    <div class="vote-panel">
+                                        <div class="up-vote">
+                                            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                        </div>
+                                        <div class="votes"><%= answer.votes %></div>
+                                        <div class="down-vote">
+                                            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                        </div>
+                                        <div class="closed">
+                    
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="answer-column" style="padding-left: 20px;">
+                                    <div class="answer-panel">
+                                        <div class="answer-content">
+                                            <%- answer.content %>
+                                        </div>
+                                        <div class="user-info">
+                                            <img src="<%= answer.author.avatar %>" class="img-responsive" alt="user" style="width: 20px;">
+                                            <span>
+                                                <%= answer.author.username %>,
+                                            </span>
+                                            <span>
+                                                answered at <%= answer.created_at %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
             </div>
         </div>
-    <% })%>
 </div>
 <div style="height: 20px"></div>
 <div class="new-answer">

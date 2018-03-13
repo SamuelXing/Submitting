@@ -25,7 +25,7 @@ router.post('/', checkNotLogin, function(req, res, next){
     const username = req.fields.username;
     const email = req.fields.email;
     const suid = req.fields.suid;
-    const avatar = '/public/image/default_user.png';
+    const avatar = '/img/default_user.png';
     const password = req.fields.password;
     const password_confirm = req.fields.password_confirm;
 

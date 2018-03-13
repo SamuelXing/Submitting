@@ -1,0 +1,67 @@
+</div>
+</div>
+</div>
+
+
+<footer class="mastfoot">
+  <div class="inner">
+    <p>Copyright@2018 SamuelXing</p>
+  </div>
+</footer>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="../js/jquery.min.js"><\/script>')</script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../js/ie10-viewport-bug-workaround.js"></script>
+<!-- the mousewheel plugin - optional to provide mousewheel support -->
+<script type="text/javascript" src="../js/jquery.mousewheel.js"></script>
+
+<!-- web3 -->
+<script type="text/javascript" src="../js/web3.min.js"></script>
+<script type="text/javascript" src="../js/truffle-contract.js"></script>
+
+<!-- web3 connection -->
+<script>
+window.addEventListener('load', function(){
+    // check if web3 has been injected by the browser:
+    if(typeof web3 !== 'undefined')
+    {
+        // you have a web3 browser!
+        web3js = new Web3(web3.currentProvider);
+    }
+    else
+    {
+        console.log('No Web3? You should consider trying MetaMask!');
+        web3js = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+    }
+})
+
+var accounts = web3.eth.accounts;
+console.log(accounts);
+
+var bid = $('#bid');
+bid.click(function(){
+    web3.eth.sendTransaction({from: web3.eth.accounts[0], to: "0x3d67a6bd741c2ca0c99dcaafc6b7f0e75726f41c", value: "100"}, function(err, transactionHash){
+        if(!err)
+            console.log(transactionHash);
+        else
+            console.error(err);
+    })
+});
+
+</script>
+
+<!-- the jScrollPane script -->
+<script type="text/javascript" src="../js/jquery.jscrollpane.min.js"></script>
+<script>
+$(function()
+{
+    $('.scroll-pane').jScrollPane();
+});
+</script>
+</body>
+</html>
