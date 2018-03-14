@@ -54,10 +54,34 @@ module.exports = {
     },
 
     // get an answer by Id
-    getAnswerById: function getAnswerById(answerId, voterId, voterName)
+    getAnswerById: function getAnswerById(answerId)
     {
-        return Answer.findOne({_id: answerId}).addVoter(voterId, voterName).exec();
-    }
+        return Answer.findOne({_id: answerId}).exec();
+    },
 
+    // add voter
+    addVoter: function addVoter(answerId, voterId)
+    {
+        return Answer.update({_id: answerId}, {$push: { voters: voterId}}).exec();
+    },
+
+    // query voters
+    queryVoter: async function queryVoter(answerId, voterId)
+    {
+        const answer = await Answer.findOne({_id: answerId});
+        if(typeof answer.voters === 'undefined')
+        {
+            return false;
+        }
+
+        if(answer.voters.indexOf(Number(voterId) != -1))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 };
   

@@ -29,7 +29,7 @@ mongolass.plugin('addVoter',{
         if(result)
         {
             console.log('HERE');
-            result.voterId = voterName;
+            
         }
         return result;
     }
@@ -57,6 +57,7 @@ exports.Answer = mongolass.model('Answer', {
     author: {type: Mongolass.Types.ObjectId},
     content: {type: 'string'},
     questionId: {type: Mongolass.Types.ObjectId},
+    voters: [{type: Mongolass.Types.ObjectId}],
     votes: {type: 'number'},
     closed: {type: 'number', default: 1}
 })

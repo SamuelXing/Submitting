@@ -120,11 +120,21 @@ router.get('/api/upvote', checkLogin, function(req, res, next){
 
 // POST /piazza/api/upvote
 router.post('/api/upvote/:answerId', checkLogin, async function(req, res, next){
-    await AnswerModel.upvote(req.params.answerId);
-    AnswerModel.getAnswerById(req.params.answerId, req.session.user._id, req.session.user.username).then(function(answer){
-        res.send(''+answer.votes);
-    });
-    
+    const result = await AnswerModel.queryVoter(req.params.answerId, req.session.user._id);
+    // has already voted
+    if(result)
+    {
+        res.status(400).send('you have voted');
+    }
+    else
+    {
+        await AnswerModel.upvote(req.params.answerId);
+        await AnswerModel.addVoter(req.params.answerId, req.session.user._id);
+        
+        AnswerModel.getAnswerById(req.params.answerId).then(function(answer){
+            res.send(''+answer.votes);
+        });
+    } 
 })
 
 module.exports = router;

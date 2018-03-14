@@ -17,7 +17,11 @@ $('.upvote').click(function(){
         url: '/piazza/api/upvote/'+id,
         success: function(response) {
             $("#"+id).html(response); 
+        },
+        error: function(response) {
+            alert('you have voted');
         }
+
         
     })
 });
