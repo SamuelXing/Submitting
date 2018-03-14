@@ -458,3 +458,16 @@ h3.heading-xs {
 {
   margin-top: 10px;
 }
+
+.vote-panel
+{
+  margin-bottom: 10px;
+}
+
+.votes
+{
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding-left: 15px;
+}
+

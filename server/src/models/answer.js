@@ -45,6 +45,19 @@ module.exports = {
     getAnswersCount: function getAnswerCount(questionId)
     {
         return Answer.count({questionId: questionId}).exec();
+    },
+
+    // upvote
+    upvote: function upvote(answerId)
+    {
+        return Answer.update({_id: answerId}, { $inc: { votes: 1}}).exec();
+    },
+
+    // get an answer by Id
+    getAnswerById: function getAnswerById(answerId, voterId, voterName)
+    {
+        return Answer.findOne({_id: answerId}).addVoter(voterId, voterName).exec();
     }
+
 };
   

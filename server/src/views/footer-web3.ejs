@@ -42,21 +42,11 @@ window.addEventListener('load', function(){
 
 var accounts = web3.eth.accounts;
 console.log(accounts);
-
-var bid = $('#bid');
-bid.click(function(){
-    web3.eth.sendTransaction({from: web3.eth.accounts[0], to: "0x3d67a6bd741c2ca0c99dcaafc6b7f0e75726f41c", value: "100"}, function(err, transactionHash){
-        if(!err)
-            console.log(transactionHash);
-        else
-            console.error(err);
-    })
-});
-
 </script>
 
 <!-- the jScrollPane script -->
 <script type="text/javascript" src="../js/jquery.jscrollpane.min.js"></script>
+<script type="text/javascript" src="../js/vote.js"></script>
 <script>
 $(function()
 {

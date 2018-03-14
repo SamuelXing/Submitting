@@ -24,6 +24,17 @@ mongolass.plugin('addCreatedAt', {
     }
 });
 
+mongolass.plugin('addVoter',{
+    afterFindOne: function(result, voterId, voterName){
+        if(result)
+        {
+            console.log('HERE');
+            result.voterId = voterName;
+        }
+        return result;
+    }
+});
+
 
 console.log(config.mongodb);
 

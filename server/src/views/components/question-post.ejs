@@ -31,16 +31,22 @@
             </div>
             <div class="panel-body" style="text-align:left;">
                     <% answers.forEach(function(answer){ %>
-                        <div class="answer-wrapper">
+                        <div class="answer-wrapper" id="answer">
                             <div class="answer-row">
                                 <div class="answer-column">
                                     <div class="vote-panel">
                                         <div class="up-vote">
-                                            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                            <button class="btn btn-default" id="upvote">
+                                                <div id="id" style="display: none"><%= answer._id %></div>
+                                                <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                            </button>    
                                         </div>
-                                        <div class="votes"><%= answer.votes %></div>
+                                        <div class="votes" id="<%= answer._id %>"><%= answer.votes %></div>
                                         <div class="down-vote">
-                                            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                            <button class="btn btn-default" id="downvote">
+                                                <div id="id" style="display: none"><%= answer._id %></div>
+                                                <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                            </button>    
                                         </div>
                                         <div class="closed">
                     

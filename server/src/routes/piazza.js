@@ -112,5 +112,20 @@ router.get('/:questionId/comment/:commentId/edit', checkLogin, function(req, res
     res.send('dummy');
 });
 
+// GET ajax test
+router.get('/api/upvote', checkLogin, function(req, res, next){
+    res.send('dummy');
+})
+
+
+// POST /piazza/api/upvote
+router.post('/api/upvote/:answerId', checkLogin, async function(req, res, next){
+    await AnswerModel.upvote(req.params.answerId);
+    AnswerModel.getAnswerById(req.params.answerId, req.session.user._id, req.session.user.username).then(function(answer){
+        res.send(''+answer.votes);
+    });
+    
+})
+
 module.exports = router;
 
