@@ -8,8 +8,9 @@ bid.click(function(){
     })
 });
 
-$('#upvote').click(function(){
+$('.upvote').click(function(){
     var id = $(this).children('#id').html();
+    console.log(id);
     $.ajax({
         type: 'POST',
         async: false,
