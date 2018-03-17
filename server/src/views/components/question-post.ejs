@@ -30,6 +30,9 @@
                 </h3>
             </div>
             <div class="panel-body" style="text-align:left;">
+                    <% if(answers.length == 0){ %>
+                        No answers yet! be the first one to answer this question.
+                    <% } else { %>
                     <% answers.forEach(function(answer){ %>
                         <div class="answer-wrapper" id="answer">
                             <div class="answer-row">
@@ -72,6 +75,7 @@
                             </div>
                         </div>
                     <% }) %>
+                    <% } %>
             </div>
         </div>
 </div>
