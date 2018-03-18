@@ -16,9 +16,11 @@ bid.click(function(type){
                 console.log(transactionHash);
                 if(!err)
                 {
+                    var transaction = web3.eth.getTransaction(transactionHash);
                     let data = {};
                     data.receipt = transactionHash;
                     data.postId = postId;
+                    data.value = web3.fromWei(transaction.value, 'ether');
                     callAjax(data);
                 }
                 else
@@ -70,7 +72,5 @@ $('.upvote').click(function(){
         error: function(response) {
             alert('you have voted');
         }
-
-        
     })
 });

@@ -7,9 +7,18 @@
         </div>
         <div class="panel-body" style="text-align:left;">
             <div style="display:none;" id="questionId"><%= question._id %></div>
+            <div id = "rcptHs" style="display:none;"><%= question.receipt %></div>
             <div style="font-size: 20px;">
                 <p style="float:left;"><%= question.title %></p>
-                <p style="float:right"><strong id="questionVal">0 Eth</strong><strong>,&nbsp&nbsp<%= question.pv %> Views</strong></p>
+                <p style="float:right">
+                    <strong id="questionVal">
+                        <% if(!question.receipt){ %>
+                            0 Eth
+                        <% } else { %>
+                            <%= question.value %> Eth
+                        <% } %>
+                    </strong>
+                    <strong>,&nbsp&nbsp<%= question.pv %> Views</strong></p>
             </div>
             <div style="clear:both;">
                 <p>
@@ -18,11 +27,12 @@
                 <% if(user) {%>
                     <% if(user._id == question.author._id){ %>
                         <% if(question.receipt){ %>
+                        <p style="float:right; margin-top:15px;">
                             <button id = "bid" class="btn btn-default" disabled>I wanna pay for asking</button>
+                        </p>
                         <% }else{ %>
                         <div style="display: none;" id="user-account"><%= user.account %></div>
                         <p style="float:right; margin-top:15px;">
-                            <!-- <button id = "bid" class="btn btn-default">I wanna pay for asking</button> -->
                             <!-- Button trigger modal -->
                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" id="payforit">
                                 I wanna pay for asking

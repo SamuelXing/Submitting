@@ -52,6 +52,7 @@ exports.Question = mongolass.model('Question', {
     content: {type: 'string' },
     pv: {type: 'number'},
     receipt: {type: 'string'},
+    value: {type: 'number', default: 0},
     solved: {type: 'number', default: 0}
 });
 

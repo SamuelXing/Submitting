@@ -166,9 +166,15 @@ router.get('/api/pay/:qeustionId', checkLogin, function(req, res, next){
 router.post('/api/pay', checkLogin, async function(req, res, next){
     const postId  = req.fields.postId;
     const receipt = req.fields.receipt;
+    const value = req.fields.value;
     const txn = await getTxn(receipt);
-    res.contentType('json');
-    res.status(200).send(JSON.stringify({data: txn.value}));
+
+    // get question by id, insert receipt
+    QuestionModel.updateReceiptByQuestionId(postId, receipt, value).then(function()
+    {
+        res.contentType('json');
+        res.status(200).send(JSON.stringify({data: txn.value}));
+    }); 
 })
 
 module.exports = router;
