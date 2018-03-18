@@ -14,7 +14,7 @@ async function getTxn(txnHash)
 {
     try
     {
-       const transaction = web3.eth.getTransaction(txnHash);
+       const transaction = await web3.eth.getTransaction(txnHash);
        return transaction;
     }
     catch(error){

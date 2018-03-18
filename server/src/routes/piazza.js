@@ -1,5 +1,26 @@
 const express = require('express')
 const router = express.Router();
+const Web3 = require('web3')
+
+// set provider
+if (typeof web3 !== 'undefined') {
+	var web3 = new Web3(web3.currentProvider);
+} else {
+	// set the provider you want from Web3.providers
+	var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+}
+
+async function getTxn(txnHash)
+{
+    try
+    {
+       const transaction = await web3.eth.getTransaction(txnHash);
+       return transaction;
+    }
+    catch(error){
+        console.log(error);
+    }
+}
 
 const checkLogin = require('../middlewares/check').checkLogin;
 const QuestionModel = require('../models/question');
@@ -142,10 +163,12 @@ router.get('/api/pay/:qeustionId', checkLogin, function(req, res, next){
 })
 
 // POST /piazza/api/:questionId/pay
-router.post('/api/pay', checkLogin, function(req, res, next){
-    console.log(req.body);
+router.post('/api/pay', checkLogin, async function(req, res, next){
+    const postId  = req.fields.postId;
+    const receipt = req.fields.receipt;
+    const txn = await getTxn(receipt);
     res.contentType('json');
-    res.status(200).send(JSON.stringify({data: "fromhere"}));
+    res.status(200).send(JSON.stringify({data: txn.value}));
 })
 
 module.exports = router;

@@ -39,14 +39,17 @@ function callAjax(data)
     $.ajax({
         type: 'post',
         async: true,
-        data: JSON.stringify(data),
-        contentType: 'application/json',
+        data: data,
+        // contentType: 'application/json',
+        dataType: 'json',
         url: '/piazza/api/pay/',
-        complete: function(){
-            $('#notify').html('your payment is processing......');
-        },
         success: function(response) {
-            $('#notify').html('paid successfully!');
+            console.log(response);
+            $("#notify").html('paid successfully! Receipt: '+ data.receipt);
+            $("#bid").prop("disabled",true);
+            $("#payforit").prop("disabled",true);
+            var value = web3.fromWei(response.data, 'ether');
+            $("#questionVal").html(value + ' Eth');
         },
         error: function(response) {
             alert('cannot process your payment');
