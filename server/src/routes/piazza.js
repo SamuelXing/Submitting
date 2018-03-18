@@ -73,7 +73,6 @@ router.get('/:questionId',async function(req, res, next){
     .then(function(result){
         const question = result[0];
         const answers = result[1];
-        console.log(answers);
         if(!question){
             throw new Error('this post does not exist');
         }
@@ -135,6 +134,19 @@ router.post('/api/upvote/:answerId', checkLogin, async function(req, res, next){
             res.send(''+answer.votes);
         });
     } 
+})
+
+// GET ajax test
+router.get('/api/:qeustionId/pay', checkLogin, function(req, res, next){
+    res.send('dummy');
+})
+
+// POST /piazza/api/:questionId/pay
+router.post('/api/:qeustionId/pay', checkLogin, function(req, res, next){
+    console.log(req.data);
+    console.log('called');
+    // res.status(200).send({data: "fromhere"});
+    res.status(200).send(JSON.stringify({data: "fromhere"}));
 })
 
 module.exports = router;

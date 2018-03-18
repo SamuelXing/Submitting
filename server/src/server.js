@@ -13,6 +13,7 @@ const flash = require('connect-flash');
 const config = require('config-lite')(__dirname);
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const bodyParser = require('body-parser');
 const cursor = ansi(process.stdout);
 
 process.setMaxListeners(0);
@@ -118,6 +119,8 @@ fs.mkdir(path.join(__dirname, '/uploaded'), function () {
 });
 
 // express
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/img', express.static(path.join(__dirname, 'public/image')));
 app.use(express.static(path.join(__dirname, '/uploaded')));

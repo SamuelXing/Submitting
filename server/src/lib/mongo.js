@@ -29,7 +29,6 @@ mongolass.plugin('addVoter',{
         if(result)
         {
             console.log('HERE');
-            
         }
         return result;
     }
@@ -43,14 +42,17 @@ exports.User = mongolass.model('User', {
     password: {type: 'string'},
     avatar: {type: 'string' },
     suid: {type: 'string' },
-    email: {type: 'string'}
+    email: {type: 'string'},
+    account: {type: 'string'},
 });
 
 exports.Question = mongolass.model('Question', {
     author: {type: Mongolass.Types.ObjectId},
     title: {type: 'string'},
     content: {type: 'string' },
-    pv: {type: 'number'}
+    pv: {type: 'number'},
+    receipt: {type: 'string'},
+    solved: {type: 'number', default: 0}
 });
 
 exports.Answer = mongolass.model('Answer', {
@@ -58,8 +60,7 @@ exports.Answer = mongolass.model('Answer', {
     content: {type: 'string'},
     questionId: {type: Mongolass.Types.ObjectId},
     voters: [{type: Mongolass.Types.ObjectId}],
-    votes: {type: 'number'},
-    closed: {type: 'number', default: 1}
+    votes: {type: 'number'}
 })
 
 exports.User.index({username:1}, {unique: true}).exec();

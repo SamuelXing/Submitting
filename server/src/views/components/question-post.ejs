@@ -6,19 +6,34 @@
             </h3>
         </div>
         <div class="panel-body" style="text-align:left;">
+            <div style="display:none;" id="questionId"><%= question._id %></div>
             <div style="font-size: 20px;">
                 <p style="float:left;"><%= question.title %></p>
-                <p style="float:right"><strong><%= question.pv %> Views</strong></p>
+                <p style="float:right"><strong>0 Eth</strong><strong>,&nbsp&nbsp<%= question.pv %> Views</strong></p>
             </div>
             <div style="clear:both;">
                 <p>
                     <%- question.content %>
                 </p>
+                <% if(user._id == question.author._id){ %>
+                    <% if(question.receipt){ %>
+                        <button id = "bid" class="btn btn-default" disabled>I wanna pay for asking</button>
+                    <% }else{ %>
+                    <div style="display: none;" id="user-account"><%= user.account %></div>
+                    <p style="float:right; margin-top:15px;">
+                        <!-- <button id = "bid" class="btn btn-default">I wanna pay for asking</button> -->
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+                            I wanna pay for asking
+                        </button>
+                   </p>
+                   <% } %>
+                <% } %>
             </div> 
         </div> 
     </div>
     <div class="panel-footer panel-footer-custom">
-        By <%= question.author.username %>, Created at <%= question.created_at %>
+        By <%= question.author.username %>, created at <%= question.created_at %>
     </div> 
 </div>
 <div style="height: 20px"></div>
@@ -104,3 +119,37 @@
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="background-color: #333; border: 1px solid #fff;">
+        <div class="modal-header" style="color: #fff;text-align:left;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Pay to: 0x3d67a6bd741c2ca0c99dcaafc6b7f0e75726f41c</h4>
+        </div>
+        <div class="modal-body">
+            <div id="notify" style="text-align: left; margin-bottom:10px;"></div>
+          <form>
+            <div class="input-group">
+            <input type="text" class="form-control" id="amount" aria-label="..." placeholder="amount">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Currency Type <span class="caret"></span></button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                <li>Ether</li>
+                <li>Wei</li>
+                <li>GWei</li>
+                </ul>
+            </div><!-- /btn-group -->
+            </div><!-- /input-group -->
+          </form>
+          <button class="btn btn-default" style="margin-top:15px;" id="bid">
+                Submit
+            </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
