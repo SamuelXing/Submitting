@@ -137,15 +137,14 @@ router.post('/api/upvote/:answerId', checkLogin, async function(req, res, next){
 })
 
 // GET ajax test
-router.get('/api/:qeustionId/pay', checkLogin, function(req, res, next){
+router.get('/api/pay/:qeustionId', checkLogin, function(req, res, next){
     res.send('dummy');
 })
 
 // POST /piazza/api/:questionId/pay
-router.post('/api/:qeustionId/pay', checkLogin, function(req, res, next){
-    console.log(req.data);
-    console.log('called');
-    // res.status(200).send({data: "fromhere"});
+router.post('/api/pay', checkLogin, function(req, res, next){
+    console.log(req.body);
+    res.contentType('json');
     res.status(200).send(JSON.stringify({data: "fromhere"}));
 })
 
