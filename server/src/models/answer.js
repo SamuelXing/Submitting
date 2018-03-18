@@ -56,7 +56,10 @@ module.exports = {
     // get an answer by Id
     getAnswerById: function getAnswerById(answerId)
     {
-        return Answer.findOne({_id: answerId}).exec();
+        return Answer.findOne({_id: answerId})
+                    .populate({path: 'author', model: 'User'})
+                    .populate({path: 'questionId', model: 'Question'})
+                    .exec();
     },
 
     // add voter
@@ -82,6 +85,12 @@ module.exports = {
         {
             return false;
         }
+    },
+
+    // update choosed
+    updateChoosed: function updateChoosed(answerId, txnHash)
+    {
+        return Answer.update({_id: answerId}, {$set: {choosed: txnHash}}).exec();
     }
 };
   

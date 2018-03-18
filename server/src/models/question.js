@@ -82,8 +82,14 @@ module.exports = {
     },
 
     // update question receipt
-    updateReceiptByQuestionId: function updateReceiptByQuestionId(questionId, receipt){
-        return Question.update({_id: questionId}, {$set: {receipt: receipt, value: value}}).exec();
+    updateReceiptByQuestionId: function updateReceiptByQuestionId(questionId, receipt, value){
+        return Question.update({_id: questionId}, {$set: {receipt: receipt, value: Number(value)}}).exec();
+    },
+
+    // update question close status
+    updateSolvedByQuestionId: function updateSolvedByQuestionId(questionId)
+    {
+        return Question.update({_id: questionId}, {$set: {solved: 1}}).exec();
     },
 
     // increase pv

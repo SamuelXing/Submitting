@@ -2,20 +2,25 @@
     <div class="panel panel-default" style="background-color: #333; margin-bottom: 0px;">
         <div class="panel-heading" style="background-color: #bbd;">
             <h3 class="panel-title" style="text-align:left">
-                Question
+                Question 
+                <% if(question.solved == '1') {%>
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> solved
+                <% } %>
             </h3>
         </div>
         <div class="panel-body" style="text-align:left;">
             <div style="display:none;" id="questionId"><%= question._id %></div>
             <div id = "rcptHs" style="display:none;"><%= question.receipt %></div>
             <div style="font-size: 20px;">
-                <p style="float:left;"><%= question.title %></p>
+                <p style="float:left;">
+                    <%= question.title %>
+                </p>
                 <p style="float:right">
                     <strong id="questionVal">
                         <% if(!question.receipt){ %>
                             0 Eth
                         <% } else { %>
-                            <%= question.value %> Eth
+                            <%= Number(question.value)/1000000000000000000 %> Eth
                         <% } %>
                     </strong>
                     <strong>,&nbsp&nbsp<%= question.pv %> Views</strong></p>
@@ -77,9 +82,13 @@
                                                 <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                                             </button>    
                                         </div>
+                                        <% if(answer.choosed){ %>
                                         <div class="closed">
-                    
+                                            <div style="padding-left: 13px; margin-top: 10px;">
+                                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                            </div>
                                         </div>
+                                        <% } %>
                                     </div>
                                 </div>
                                 <div class="answer-column" style="padding-left: 20px;">

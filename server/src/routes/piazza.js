@@ -137,7 +137,6 @@ router.get('/api/upvote', checkLogin, function(req, res, next){
     res.send('dummy');
 })
 
-
 // POST /piazza/api/upvote
 router.post('/api/upvote/:answerId', checkLogin, async function(req, res, next){
     const result = await AnswerModel.queryVoter(req.params.answerId, req.session.user._id);
@@ -148,6 +147,35 @@ router.post('/api/upvote/:answerId', checkLogin, async function(req, res, next){
     }
     else
     {
+        const answer = await AnswerModel.getAnswerById(req.params.answerId);
+        // get post
+        const question = await QuestionModel.getQuestionById(answer.questionId._id);
+        if(answer.questionId.author == req.session.user._id && question.solved != 1 && question.value != 0)
+        {
+            const toAddress = answer.author.account;
+            const fromAddress = "0x7949cbab5bb23342a90e87da70ef20534c6e7c4b";
+            const value = question.value;
+            // TODO: unlock account, read passphrase file
+            // transfer money
+            web3.eth.sendTransaction({from: fromAddress, to: toAddress, value: value},
+                async function(err, transactionHash){
+                    if(err)
+                    {
+                        console.log(err);
+                        // internal error response
+                        res.send('internal error');
+                    }
+                    else
+                    {
+                        console.log("server transfer receipt:" + transactionHash);
+                        // make this question solved
+                        await AnswerModel.updateChoosed(answer._id, transactionHash);
+                        // update question status
+                        await QuestionModel.updateSolvedByQuestionId(answer.questionId._id);
+                    }
+                });
+        }
+        /// update vote
         await AnswerModel.upvote(req.params.answerId);
         await AnswerModel.addVoter(req.params.answerId, req.session.user._id);
         
@@ -170,10 +198,10 @@ router.post('/api/pay', checkLogin, async function(req, res, next){
     const txn = await getTxn(receipt);
 
     // get question by id, insert receipt
-    QuestionModel.updateReceiptByQuestionId(postId, receipt, value).then(function()
+    await QuestionModel.updateReceiptByQuestionId(postId, receipt, txn.value).then(function()
     {
         res.contentType('json');
-        res.status(200).send(JSON.stringify({data: txn.value}));
+        res.status(200).send(JSON.stringify({data: value}));
     }); 
 })
 

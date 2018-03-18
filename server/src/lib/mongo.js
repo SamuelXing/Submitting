@@ -61,7 +61,8 @@ exports.Answer = mongolass.model('Answer', {
     content: {type: 'string'},
     questionId: {type: Mongolass.Types.ObjectId},
     voters: [{type: Mongolass.Types.ObjectId}],
-    votes: {type: 'number'}
+    votes: {type: 'number'},
+    choosed: {type: 'string', default: ''}
 })
 
 exports.User.index({username:1}, {unique: true}).exec();

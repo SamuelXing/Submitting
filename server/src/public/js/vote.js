@@ -10,18 +10,25 @@ bid.click(function(type){
     if(amount!='')
     {
         web3.eth.sendTransaction({from: fromAddress, 
-            to: "0x3d67a6bd741c2ca0c99dcaafc6b7f0e75726f41c", 
+            to: "0x7949cbab5bb23342a90e87da70ef20534c6e7c4b", 
             value: web3.toWei(Number(amount), "ether")}, 
             function(err, transactionHash){
                 console.log(transactionHash);
                 if(!err)
                 {
-                    var transaction = web3.eth.getTransaction(transactionHash);
-                    let data = {};
-                    data.receipt = transactionHash;
-                    data.postId = postId;
-                    data.value = web3.fromWei(transaction.value, 'ether');
-                    callAjax(data);
+                    web3.eth.getTransaction(transactionHash, function(err, transaction){
+                        if(err)
+                        {
+                            console.log(err);
+                        }
+                        else{
+                            let data = {};
+                            data.receipt = transactionHash;
+                            data.postId = postId;
+                            data.value = amount;
+                            callAjax(data);
+                        }
+                    });
                 }
                 else
                 {
@@ -50,8 +57,8 @@ function callAjax(data)
             $("#notify").html('paid successfully! Receipt: '+ data.receipt);
             $("#bid").prop("disabled",true);
             $("#payforit").prop("disabled",true);
-            var value = web3.fromWei(response.data, 'ether');
-            $("#questionVal").html(value + ' Eth');
+            var value = response.data;
+            $("#questionVal").html(''+ web3.fromWei(value ,'ether') + ' Eth');
         },
         error: function(response) {
             alert('cannot process your payment');
@@ -68,6 +75,9 @@ $('.upvote').click(function(){
         url: '/piazza/api/upvote/'+id,
         success: function(response) {
             $("#"+id).html(response); 
+            setTimeout(function(){
+                location.reload();
+            },2000);
         },
         error: function(response) {
             alert('you have voted');
