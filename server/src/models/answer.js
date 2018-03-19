@@ -76,8 +76,7 @@ module.exports = {
         {
             return false;
         }
-
-        if(answer.voters.indexOf(Number(voterId) != -1))
+        if(answer.voters.map(String).indexOf(voterId)!=-1)
         {
             return true;
         }

@@ -58,7 +58,7 @@ function callAjax(data)
             $("#bid").prop("disabled",true);
             $("#payforit").prop("disabled",true);
             var value = response.data;
-            $("#questionVal").html(''+ web3.fromWei(value ,'ether') + ' Eth');
+            $("#questionVal").html('' + value + ' Eth');
         },
         error: function(response) {
             alert('cannot process your payment');
