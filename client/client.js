@@ -14,7 +14,7 @@ const Websocket = require('ws');
 
 const datadir = './.dsbm';
 
-let provider = new web3.providers.HttpProvider("http://localhost:8545");
+let provider = new web3.providers.HttpProvider("http://127.0.0.1:8545");
 
 // let account_address = '0x6753136cec2577fa2fecf3d10a62c378c0ed1e41';
 // let contract_address = '0x17037d532ed8bdd4e8ded9314a74f96f9fd1c33f';
