@@ -11,3 +11,4 @@ server/src/client.js
 client/static/
 client/templates/
 .idea
+example_project

@@ -3,10 +3,10 @@ const fs = require('fs')
 
 // set provider
 if (typeof web3 !== 'undefined') {
-  const web3 = new Web3(web3.currentProvider);
+  var web3 = new Web3(web3.currentProvider);
 } else {
   // set the provider you want from Web3.providers
-  const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+  var web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
 }
 
 // get transaction by txn number
@@ -80,9 +80,9 @@ async function verify(logFile, infoFile)
 }
 
 // ------<test>-----
-//verify('log.txt', 'personal.json')
+verify('log.txt', 'personal.json')
 
-module.exports = verify
+//module.exports = verify
 
 
 
