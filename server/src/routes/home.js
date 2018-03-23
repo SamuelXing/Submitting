@@ -78,14 +78,24 @@ router.get('/', async function(req, res, next){
 	}
 	else
 	{
-		for(let i=latest; i>latest-10;i--)
+		for(let i=latest; i>0; i--)
 		{
-			let block = await getBlockContent(i);
-			for(let txn of block.transactions) {
-				let txnContent = await getTxn(txn);
-				txns.push(txnContent);
+			if(blocks.length >= 10 && txns.length >= 10){
+				break;
 			}
-			blocks.push(block);
+			let block = await getBlockContent(i);
+			if(blocks.length <= 10)
+			{
+				blocks.push(block);
+			}
+			if(block.transactions != null){
+				for(let txn of block.transactions)
+				{
+					let txnContent = await getTxn(txn);
+					if(txns.length <= 10)
+						txns.push(txnContent);
+				}
+			}
 		}
 	}
 	res.render('home', {blocks: blocks, txns:txns});
