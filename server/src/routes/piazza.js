@@ -152,7 +152,6 @@ router.post('/api/upvote/:answerId', checkLogin, async function(req, res, next){
         const question = await QuestionModel.getQuestionById(answer.questionId._id);
         if(answer.questionId.author == req.session.user._id && question.solved != 1 && question.value != 0)
         {
-            console.log('HERE');
             const toAddress = answer.author.account;
             const fromAddress = "0x7949cbab5bb23342a90e87da70ef20534c6e7c4b";
             const value = question.value;

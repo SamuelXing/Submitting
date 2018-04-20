@@ -44,4 +44,20 @@ router.get('/:blockId', async function(req, res, next){
     res.render('bck_detail', {block: block});
 });
 
+router.get('/', function(req, res, next){
+	res.render('blocks');
+})
+
+router.get('/api/getpage/:pageId', async function(req, res, next){
+	let blocks = [];
+	const pageId = req.params.pageId;
+	const latest = await getLatestBlockNumber();
+	for(let i=latest - (pageId - 1) * 20; i> latest-pageId * 20; i--)
+	{
+		let block = await getBlockContent(i);
+		blocks.push(block);
+	}
+	res.status(200).send(blocks);
+})
+
 module.exports = router;

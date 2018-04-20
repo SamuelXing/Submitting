@@ -18,7 +18,7 @@ const cursor = ansi(process.stdout);
 process.setMaxListeners(0);
 
 // WebSocket
-function BandwidthSampler (ws, interval) {
+function Bandwidth (ws, interval) {
     interval = interval || 2000;
     let previousByteCount = 0;
     let self = this;
@@ -26,14 +26,14 @@ function BandwidthSampler (ws, interval) {
         let byteCount = ws.bytesReceived;
         let bytesPerSec = (byteCount - previousByteCount) / (interval / 1000);
         previousByteCount = byteCount;
-        self.emit('sample', bytesPerSec);
+        self.emit('data', bytesPerSec);
     }, interval);
     ws.on('close', function () {
         clearInterval(intervalId);
     });
 }
 
-util.inherits(BandwidthSampler, events.EventEmitter);
+util.inherits(Bandwidth, events.EventEmitter);
 
 function makePathForFile (filePath, prefix, cb) {
     if (typeof cb !== 'function') throw new Error('callback is required');
@@ -62,8 +62,8 @@ wss.on('connection', function (ws) {
     cursor.goto(1, 4 + thisId).eraseLine();
     console.log('Client #%d connected', thisId);
 
-    let sampler = new BandwidthSampler(ws);
-    sampler.on('sample', function (bps) {
+    let sampler = new Bandwidth(ws);
+    sampler.on('data', function (bps) {
         cursor.goto(1, 4 + thisId).eraseLine();
         console.log('WebSocket #%d incoming bandwidth: %d MB/s', thisId, Math.round(bps / (1024 * 1024)));
     });
@@ -110,16 +110,13 @@ wss.on('connection', function (ws) {
 
 fs.mkdir(path.join(__dirname, '/uploaded'), function () {
     // ignore errors, most likely means directory exists
-    console.log('Uploaded files will be saved to %s/uploaded.', __dirname);
-    console.log('Remember to wipe this directory if you upload lots and lots.');
     server.listen(config.port, function () {
         console.log('Listening on http://localhost:8080');
+        console.log('Uploaded files will be saved to %s/uploaded.', __dirname);
     });
 });
 
 // express
-// app.use(bodyParser.urlencoded({extended: true}));
-// app.use(bodyParser.json({type: 'application/json'}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/img', express.static(path.join(__dirname, 'public/image')));
 app.use(express.static(path.join(__dirname, '/uploaded')));
@@ -147,7 +144,7 @@ app.use(flash());
 // form handling middleware
 app.use(require('express-formidable')({
     keepExtensions: true // keep extension
-  }));
+}));
 
 // set template global variable
 app.use(function(req, res, next){

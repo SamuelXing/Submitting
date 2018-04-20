@@ -46,7 +46,7 @@ function callAjax(data)
 {
     console.log(data);
     $.ajax({
-        type: 'post',
+        type: 'POST',
         async: true,
         data: data,
         // contentType: 'application/json',
