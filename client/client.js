@@ -9,6 +9,7 @@ const CryptoJS = require("crypto-js");
 const contract = require('truffle-contract');
 const Websocket = require('ws');
 const archiver = require('archiver');
+const moment = require('moment');
 
 const datadir = __dirname + '/.dsbm';
 
@@ -159,7 +160,10 @@ Uploader.prototype.sendFile = function (file, cb) {
         let jsonData = JSON.parse(dataStream);
         let remotePath = jsonData.name + '_' + jsonData.suid;
         // file data
-        let fileData = {name: file, path: remotePath+"/"+file };
+        let time = moment();
+        let timestamp = time.format('YYYYMMDDHHmmss');
+        justFilename = timestamp + '_' + path.basename(file);
+        let fileData = {name: justFilename, path: remotePath+"/"+justFilename};
         this.sending = fileData;
         this.ws.send(JSON.stringify(fileData));
         let data = fs.readFileSync(__dirname + '/' + file);
@@ -209,25 +213,26 @@ function upload() {
         }
         archive.finalize();
 
-        // upload file to remote server, send zip and .dsbm
-        let uploader = new Uploader('ws://localhost:8080', function(){
-        if(filename === '.')
-            return;
-        uploader.sendFile(filename, function (error) {
-            if(error)
-            {
-                console.log(error);
-                return;
-            }
-            console.log('Sent: ' + filename);
-            });
-        });
     }catch(err)
     {
         console.log(err);
     };
+}
+
+function status(){
+    let ignore;
+    if(fs.existsSync(__dirname + '/' + '.dsbmignore'))
+        ignore = fs.readFileSync(__dirname + '/' + '.dsbmignore', 'utf-8').split('\n').filter(Boolean);
     
-    /*
+    let files = traverse(__dirname, ignore);
+    for(let i=0; i < files.length; i++)
+    {
+        console.log('   file: ' + files[i]);
+    }
+}
+
+function upload_(filename)
+{
     let uploader = new Uploader('ws://localhost:8080', function(){
         if(filename === '.')
             return;
@@ -245,24 +250,18 @@ function upload() {
         uploader.close();
         console.log('100% done ' + filename + ' sent.');
     };
-    */
-}
-
-function status(){
-    let ignore;
-    if(fs.existsSync(__dirname + '/' + '.dsbmignore'))
-        ignore = fs.readFileSync(__dirname + '/' + '.dsbmignore', 'utf-8').split('\n').filter(Boolean);
-    
-    let files = traverse(__dirname, ignore);
-    for(let i=0; i < files.length; i++)
-    {
-        console.log('   file: ' + files[i]);
-    }
 }
 
 // 'close' event is fired only when a file descriptor is involved
 output.on('close', function() {
-    console.log(archive.pointer() + ' total bytes');
+    console.log('compressed ' + archive.pointer() + ' total bytes');
+    // upload file to remote server, send zip and .dsbm
+    const zipFile = __dirname.split(path.sep).pop() +'.zip';
+    upload_(zipFile);
+    const logFile = '.dsbm/log.txt';
+    const personalFile =  '.dsbm/personal.json';
+    upload_(logFile);
+    upload_(personalFile);
 });
 
 output.on('end', function() {

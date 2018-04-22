@@ -30,6 +30,7 @@
   "dependencies": {
     "archiver": "^2.1.1",
     "commander": "^2.13.0",
+    "moment": "^2.22.1",
     "truffle": "^4.0.5",
     "truffle-contract": "^3.0.2",
     "web3": "^0.20.4",

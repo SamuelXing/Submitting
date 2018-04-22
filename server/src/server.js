@@ -13,6 +13,7 @@ const flash = require('connect-flash');
 const config = require('config-lite')(__dirname);
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const moment = require('moment');
 const cursor = ansi(process.stdout);
 
 process.setMaxListeners(0);
@@ -37,6 +38,11 @@ util.inherits(Bandwidth, events.EventEmitter);
 
 function makePathForFile (filePath, prefix, cb) {
     if (typeof cb !== 'function') throw new Error('callback is required');
+    let time = moment();
+    let year = time.format('YYYY');
+    let month = time.format('MM');
+    let day = time.format('DD');
+    filePath = year+ '/'+ month + '/' + day + '/' + filePath;
     filePath = path.dirname(path.normalize(filePath)).replace(/^(\/|\\)+/, '');
     let pieces = filePath.split(/(\\|\/)/);
     let incrementalPath = prefix;
