@@ -6,8 +6,7 @@
 const program = require('commander');
 const co = require('co');
 const prompt = require('co-prompt');
-const {init, submit, upload} = require('./client');
-
+const {init, submit, upload, status} = require('./client');
 
 program
     .version('0.0.1')
@@ -26,15 +25,15 @@ program
 
 program
     .command('create <project>')
-    .description('Creat an empty project')
+    .description('Creat an empty project');
 
 program
     .command('readme')
-    .description('Check readme doc')
+    .description('Check readme doc');
 
 program
     .command('peer')
-    .description('check the peer info')
+    .description('check the peer info');
 
 program
     .command('submit <filename>')
@@ -44,17 +43,20 @@ program
 
 program
     .command('reset <name>')
-    .description('reset options')
+    .description('reset options');
 
 program
-    .command('upload <filename>')
+    .command('status')
+    .description('check current status')
+    .action(() => {status()});
+
+program
+    .command('upload')
     .description('upload file to server')
-    .action(filename => {
-        upload(filename);
-    });
+    .action(() => {upload()});
 
 program
     .command('start')
-    .description('start app')
+    .description('start app');
 
 program.parse(process.argv);

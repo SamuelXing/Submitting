@@ -1,7 +1,4 @@
 #!/usr/bin/env node
-// TODO: handle path for different OS
-// TODO: easy deploy blockchain
-// TODO: log file format
 // TODO: error check
 // TODO: command line prompt
 
@@ -11,14 +8,11 @@ const path = require('path');
 const CryptoJS = require("crypto-js");
 const contract = require('truffle-contract');
 const Websocket = require('ws');
+const archiver = require('archiver');
 
-const datadir = './.dsbm';
+const datadir = __dirname + '/.dsbm';
 
 let provider = new web3.providers.HttpProvider("http://127.0.0.1:8545");
-
-// let account_address = '0x6753136cec2577fa2fecf3d10a62c378c0ed1e41';
-// let contract_address = '0x17037d532ed8bdd4e8ded9314a74f96f9fd1c33f';
-
 let sc = new contract(require("./build/contracts/SubmitContract.json"));
 
 sc.setProvider(provider);
@@ -26,6 +20,14 @@ sc.setProvider(provider);
 async function getContract() {
     return await sc.deployed()
 }
+
+// zip up
+let output = fs.createWriteStream(__dirname + '/'+__dirname.split(path.sep).pop() +'.zip');
+let archive = archiver('zip', {
+    zlib: { level: 9 } // Sets the compression level.
+});
+// pipe archive data to the file
+archive.pipe(output);
 
 // init the environment
 // create a json file that hold the description info for the dsbm
@@ -142,24 +144,24 @@ function Uploader(url, cb)
 
 
 Uploader.prototype.sendFile = function (file, cb) {
-    if(this.ws.readyState !== Websocket.OPEN)
-        throw new Error('Not connected');
-    if(this.sending)
-    {
-        this.sendQueue.push(arguments);
-        return;
-    }
-    // construct msg head
-    if(!fs.existsSync(datadir+'/personal.json'))
-        throw new Error('has to run init first');
-    let dataStream = fs.readFileSync(datadir+'/personal.json');
-    let jsonData = JSON.parse(dataStream);
-    let remotePath = jsonData.name + '_' + jsonData.suid;
-    // file data
-    let fileData = {name: file, path: remotePath+"/"+file };
-    this.sending = fileData;
-    this.ws.send(JSON.stringify(fileData));
     try{
+        if(this.ws.readyState !== Websocket.OPEN)
+            throw new Error('Not connected');
+        if(this.sending)
+        {
+            this.sendQueue.push(arguments);
+            return;
+        }
+        // construct msg head
+        if(!fs.existsSync(datadir+'/personal.json'))
+            throw new Error('has to run init first');
+        let dataStream = fs.readFileSync(datadir+'/personal.json');
+        let jsonData = JSON.parse(dataStream);
+        let remotePath = jsonData.name + '_' + jsonData.suid;
+        // file data
+        let fileData = {name: file, path: remotePath+"/"+file };
+        this.sending = fileData;
+        this.ws.send(JSON.stringify(fileData));
         let data = fs.readFileSync(__dirname + '/' + file);
         this.ws.send(data);
     }
@@ -172,25 +174,60 @@ Uploader.prototype.close = function () {
     this.ws.close();
 }
 
+// get all files in cur directory
+function traverse(dir, ignore, filelist)
+{
+    files = fs.readdirSync(dir);
+    filelist = filelist || [];
+    files.forEach(function(file) {
+      if (fs.statSync(dir + '/' + file).isDirectory() && ignore.indexOf(file) <= -1) {
+        filelist = traverse(dir + '/' + file, ignore, filelist);
+      }
+      else {
+        if(ignore.indexOf(file) <= -1)
+            filelist.push(dir + '/' + file);
+      }
+    });
+    return filelist;
+}
+
 // upload zip file with receipt file to the server
 // socket communication
 // check dsbm.json information, construct message, network config
-function upload(filename) {
-    let localPath = __dirname + '/' + filename;
-    try {
-        // file esisted or not, extension check.
-        if (!fs.existsSync(localPath))
-            throw new Error("file does not exist");
-        if (path.extname(filename) != '.zip')
-            throw new Error("has to be a /'.zip/' file");
-    }
-    catch (err)
+function upload() {
+    try{
+        //read '.dsbmignore' line by line
+        let ignore;
+        if(fs.existsSync(__dirname + '/' + '.dsbmignore'))
+            ignore = fs.readFileSync(__dirname + '/' + '.dsbmignore', 'utf-8').split('\n').filter(Boolean);
+        
+        let files = traverse(__dirname, ignore);
+        for(let i=0; i < files.length; i++)
+        {
+            if(path.basename(files[i]) !== __dirname.split(path.sep).pop() +'.zip')
+                archive.append(fs.createReadStream(files[i]), {name: path.relative(process.cwd(), files[i])});
+        }
+        archive.finalize();
+
+        // upload file to remote server, send zip and .dsbm
+        let uploader = new Uploader('ws://localhost:8080', function(){
+        if(filename === '.')
+            return;
+        uploader.sendFile(filename, function (error) {
+            if(error)
+            {
+                console.log(error);
+                return;
+            }
+            console.log('Sent: ' + filename);
+            });
+        });
+    }catch(err)
     {
-        // if err, process
-        console.log('ERROR: ' + err);
-    }
-
-
+        console.log(err);
+    };
+    
+    /*
     let uploader = new Uploader('ws://localhost:8080', function(){
         if(filename === '.')
             return;
@@ -208,8 +245,34 @@ function upload(filename) {
         uploader.close();
         console.log('100% done ' + filename + ' sent.');
     };
+    */
 }
 
-module.exports = {init, submit, upload};
+function status(){
+    let ignore;
+    if(fs.existsSync(__dirname + '/' + '.dsbmignore'))
+        ignore = fs.readFileSync(__dirname + '/' + '.dsbmignore', 'utf-8').split('\n').filter(Boolean);
+    
+    let files = traverse(__dirname, ignore);
+    for(let i=0; i < files.length; i++)
+    {
+        console.log('   file: ' + files[i]);
+    }
+}
+
+// 'close' event is fired only when a file descriptor is involved
+output.on('close', function() {
+    console.log(archive.pointer() + ' total bytes');
+});
+
+output.on('end', function() {
+    console.log('Data has been drained');
+});
+
+archive.on('error', function(err) {
+    throw err;
+});
+
+module.exports = {init, submit, upload, status};
 
 

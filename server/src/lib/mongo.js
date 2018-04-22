@@ -27,9 +27,7 @@ mongolass.plugin('addCreatedAt', {
 mongolass.plugin('addVoter',{
     afterFindOne: function(result, voterId, voterName){
         if(result)
-        {
-            console.log('HERE');
-        }
+            console.log(result);
         return result;
     }
 });
@@ -63,7 +61,7 @@ exports.Answer = mongolass.model('Answer', {
     voters: [{type: Mongolass.Types.ObjectId}],
     votes: {type: 'number'},
     choosed: {type: 'string', default: ''}
-})
+});
 
 exports.User.index({username:1}, {unique: true}).exec();
 exports.Question.index({author: 1, _id: -1 }).exec();
