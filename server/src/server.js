@@ -113,14 +113,6 @@ wss.on('connection', function (ws) {
     });
 });
 
-fs.mkdir(path.join(__dirname, '/uploaded'), function () {
-    // ignore errors, most likely means directory exists
-    server.listen(config.port, function () {
-        console.log('Listening on http://localhost:8080');
-        console.log('Uploaded files will be saved to %s/uploaded.', __dirname);
-    });
-});
-
 // express
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/img', express.static(path.join(__dirname, 'public/image')));
@@ -162,6 +154,10 @@ app.use(function(req, res, next){
 //router
 routes(app);
 
+server.listen(config.port, function () {
+    console.log('Listening on http://localhost:8080');
+    console.log('Uploaded files will be saved to %s/uploaded.', __dirname);
+});
 
 
 
