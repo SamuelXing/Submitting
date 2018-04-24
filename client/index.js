@@ -6,7 +6,7 @@
 const program = require('commander');
 const co = require('co');
 const prompt = require('co-prompt');
-const {init, submit, upload, status} = require('./client');
+const {init, submit, upload, status, upload_} = require('./client');
 
 program
     .version('0.0.1')
@@ -54,6 +54,11 @@ program
     .command('upload')
     .description('upload file to server')
     .action(() => {upload()});
+
+program
+    .command('sendFile')
+    .description('send a file to server')
+    .action((filename) => {upload_(filename)});
 
 program
     .command('start')

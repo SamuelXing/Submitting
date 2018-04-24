@@ -15,6 +15,7 @@ if (typeof web3 !== 'undefined') {
 async function getLatestBlockNumber()
 {
 	try{
+		// get the highest block
 		const number = await web3.eth.getBlockNumber();
 		return number;
 	}catch(error)
@@ -35,13 +36,28 @@ async function getBlockContent(blockNum)
 }
 
 router.get('/:blockId', async function(req, res, next){
-    const blockId = req.params.blockId;
-    const latest = await getLatestBlockNumber();
+	const blockId = req.params.blockId;
+	const latest = await getLatestBlockNumber();
+	// if block numer greater than the highest
     if(blockId > latest){
-       res.render('bck_detail', {block: {}});
-    }
-    const block = await getBlockContent(blockId);
-    res.render('bck_detail', {block: block});
+	   res.render('bck_detail', {message: {
+					valid: false, 
+					msg: "This block is currently not mined."},
+					block: {}});
+	}
+	// if block number less than 0
+	if(blockId < 0)
+	{
+		res.render('bck_detail', {message: {
+					valid: false, 
+					msg: "Invalid block number."},
+					block: {}});
+	}
+    const block = await getBlockContent(blockId);	
+	res.render('bck_detail', {message: {
+					valid: true, 
+					msg: "valid"},
+					block: block});
 });
 
 router.get('/', function(req, res, next){

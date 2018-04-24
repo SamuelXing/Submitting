@@ -25,4 +25,21 @@ module.exports =
 		next();
 	},
 
+	isAdmin: function isAdmin(req, res, next)
+	{
+		if(!req.session.user)
+		{
+			req.flash('error', 'you have to sign in first')
+			return res.redirect('/signin');
+		}
+
+		if(!req.session.user.isAdmin)
+		{
+			req.flash('error', 'you have no permission to access this page')
+			return res.redirect('/signin');
+		}
+
+		next();
+	},
+
 };

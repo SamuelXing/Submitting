@@ -159,10 +159,13 @@ Uploader.prototype.sendFile = function (file, cb) {
         let dataStream = fs.readFileSync(datadir+'/personal.json');
         let jsonData = JSON.parse(dataStream);
         let remotePath = jsonData.name + '_' + jsonData.suid;
+        justFilename = path.basename(file);
         // file data
-        let time = moment();
-        let timestamp = time.format('YYYYMMDDHHmmss');
-        justFilename = timestamp + '_' + path.basename(file);
+        if(path.extname(file) === '.zip'){
+            let time = moment();
+            let timestamp = time.format('YYYYMMDDHHmmss');
+            justFilename = timestamp + '_' + path.basename(file);
+        }
         let fileData = {name: justFilename, path: remotePath+"/"+justFilename};
         this.sending = fileData;
         this.ws.send(JSON.stringify(fileData));
@@ -272,6 +275,6 @@ archive.on('error', function(err) {
     throw err;
 });
 
-module.exports = {init, submit, upload, status};
+module.exports = {init, submit, upload, status, upload_};
 
 

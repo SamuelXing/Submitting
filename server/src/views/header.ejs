@@ -19,9 +19,11 @@
 
     <!-- Custom styles for this template -->
     <link href="../css/cover.css" rel="stylesheet">
-
+    <link type="text/css" href="../css/font-awesome.min.css" rel="stylesheet" />
+    
     <!-- styles needed by jScrollPane -->
     <link type="text/css" href="../css/jquery.jscrollpane.css" rel="stylesheet" media="all" />
+    
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -60,6 +62,9 @@
                     aria-expanded="false"><%= user.username %><span class="caret"></span></a>
                     <ul class="dropdown-menu">
                       <li><a href="#">Profile</a></li>
+                      <% if(user.isAdmin){ %>
+                        <li><a href="/admin">Administration</a></li>
+                      <% } %>
                       <li><a href="/signout">Signout</a></li>
                     </ul>
                   <% } else { %>

@@ -1,48 +1,31 @@
 <%- include('header') %>
-
 <div class="inner cover">
-    <div class = "row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
-            <div class="panel panel-profile no-bg">
-                <div class="panel-heading">
-                    <h2 class="panel-title heading-sm pull-left">
-                        Admin
-                    </h2>
-                </div>
-                <div class="panel-body">
-                    <form class="form_post" method="post" enctype"multipart/form-data" action="/admin">
-                        <div class="form-group">
-                            <label for="username" class="col-md-2 control-label">Username</label>
-                            <div class="col-md-10" style="margin-bottom: 10px;">
-                                <input type = "text" class="form-control" id = "username" placeholder="Username">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="password" class="col-md-2 control-label">Password</label>
-                            <div class="col-md-10" style="margin-bottom: 10px;">
-                                <input type="password" class="form-control" id = "password" placeholder="Password">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox"> Remember me
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-offset-2 col-md-10" style="margin-bottom: 10px;">
-                                <button type="submit" class="btn btn-default">Submit</button>
-                            </div>
-                        </div>
-                    </form>
+        <div class="row">
+            <div class="breadcrumbs">
+                <div class="container">
+                    <h1 class="pull-left">Administration</h1>
+                    <ol class="pull-right breadcrumb">
+                        <li><a href="/">Home</a></li>
+                        <li class="active">File Browsing</li>
+                        <li><a href="#">Quiz</a></li>
+                    </ol>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+        <div class="row pull-right" style="margin-top: 10px; margin-bottom: 10px; margin-right: 20px">
+            File Browsing
+            <span class="up">
+                <i class="fa fa-level-up"></i> Up
+            </span> 
 
+            <span class="verify" style="display: none">
+                Verify
+            </span> 
+        </div>
+
+        <div class="row">
+            <table class="table table-hover linksholder" style="border-top: 1px solid #999;">
+            </table>
+        </div>
+    </div>
 <%- include('footer') %>

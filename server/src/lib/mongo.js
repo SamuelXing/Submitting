@@ -41,7 +41,8 @@ exports.User = mongolass.model('User', {
     avatar: {type: 'string' },
     suid: {type: 'string' },
     email: {type: 'string'},
-    account: {type: 'string'},
+    account:  {type: 'string'},
+    isAdmin: {type: 'boolean', default: false, required: true},
 });
 
 exports.Question = mongolass.model('Question', {

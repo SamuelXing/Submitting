@@ -555,3 +555,21 @@ h3.heading-xs {
   to{ bottom:0; opacity:1 }
 }
 
+.up { 
+  margin-left: 20px; 
+  border:solid 1px #bbd; 
+  cursor:pointer; 
+  width:100px; 
+  padding-left: 10px; 
+  padding-right:10px; 
+}
+
+.verify { 
+  margin-left: 20px; 
+  border:solid 1px #bbd; 
+  cursor:pointer; 
+  width:100px; 
+  padding-left: 10px; 
+  padding-right:10px; 
+}
+

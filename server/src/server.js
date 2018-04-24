@@ -79,7 +79,6 @@ wss.on('connection', function (ws) {
     ws.on('message', function (data) {
         if (typeof data === 'string') {
             currentFile = JSON.parse(data);
-            // note: a real-world app would want to sanity check the data
         } else {
             if (currentFile == null) return;
             makePathForFile(currentFile.path, path.join(__dirname, '/uploaded'), function (error, path) {
@@ -163,41 +162,6 @@ app.use(function(req, res, next){
 //router
 routes(app);
 
-// app.get('/files', function(req, res)
-// {
-//     let currentDir  = path.join(__dirname, '/uploaded');
-//     let query = req.query.path || '';
-//     if(query) cur = path.join(dir, query);
-//     console.log('browsing ', currentDir);
-//     fs.readdir(currentDir, function(err, files)
-//     {
-//         if(err)
-//         {
-//             throw err;
-//         }
-//         let data = [];
-//         files.forEach(function (file)
-//         {
-//             try
-//             {
-//                 let isDirectory = fs.statSync(path.join(currentDir,file)).isDirectory();
-//                 if(isDirectory)
-//                 {
-//                     data.push({ Name : file, IsDirectory: true, Path : path.join(query, file)});
-//                 } else 
-//                 {
-//                     let ext = path.extname(file);
-//                     data.push({ Name : file, Ext : ext, IsDirectory: false, Path : path.join(query, file) });
-//                 }
-//             }catch(e)
-//             {
-//                 console.log(e);
-//             }
-//         });
-//         data = _.sortBy(data, function(f) { return f.Name });
-//         res.json(data);
-//     });
-// });
 
 
 
