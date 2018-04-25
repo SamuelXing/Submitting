@@ -76,6 +76,7 @@ wss.on('connection', function (ws) {
 
     let filesReceived = 0;
     let currentFile = null;
+    //on connect message
     ws.on('message', function (data) {
         if (typeof data === 'string') {
             currentFile = JSON.parse(data);

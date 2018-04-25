@@ -23,10 +23,9 @@ router.get('/download/:filename', isAdmin, function(req, res, next){
 
 router.get('/files', function(req, res) {
     var currentDir =  dir;
-    console.log(currentDir);
     var query = req.query.path || '';
     if (query) currentDir = path.join(dir, query);
-    console.log("browsing ", currentDir);
+    // console.log("browsing ", currentDir);
     fs.readdir(currentDir, function (err, files) {
         if (err) {
            throw err;
