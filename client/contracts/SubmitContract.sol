@@ -6,7 +6,7 @@ contract SubmitContract
     mapping(bytes32=>bytes32[]) projects;
     
     
-    function submit(bytes32 name, bytes32 hashValue) public returns(bytes32)
+    function submit(bytes32 name, bytes32 hashValue) public returns(uint)
     {
         if(projects[name].length == 0)
         {
@@ -16,17 +16,12 @@ contract SubmitContract
         {
             for(uint i=0; i<projects[name].length; i++)
             {
-                assert(projects[name][i] != hashValue);
+                require(projects[name][i] != hashValue);
             }
             projects[name].push(hashValue);
         }
-				
-				return hashValue;
-    }
-    
-    function delPrj(bytes32 name) public
-    {
-        delete projects[name];
+        
+        return projects[name].length;
     }
     
     function getHashList(bytes32 name) public view returns(bytes32[])

@@ -11,9 +11,13 @@ const Websocket = require('ws');
 const archiver = require('archiver');
 const moment = require('moment');
 
-const datadir = __dirname + '/.dsbm';
+const curDir = process.cwd();
+const datadir = process.cwd() + '/.dsbm';
 
-let provider = new web3.providers.HttpProvider("http://127.0.0.1:8545");
+const PROOF = '.dsbm/PROOF';             // local record
+const IDENTITY =  '.dsbm/IDENTITY'; // personal indentity
+
+let provider = new web3.providers.HttpProvider("http://127.0.0.1:8550");
 let sc = new contract(require("./build/contracts/SubmitContract.json"));
 
 sc.setProvider(provider);
@@ -22,13 +26,6 @@ async function getContract() {
     return await sc.deployed()
 }
 
-// zip up
-let output = fs.createWriteStream(__dirname + '/'+__dirname.split(path.sep).pop() +'.zip');
-let archive = archiver('zip', {
-    zlib: { level: 9 } // Sets the compression level.
-});
-// pipe archive data to the file
-archive.pipe(output);
 
 // init the environment
 // create a json file that hold the description info for the dsbm
@@ -50,19 +47,19 @@ function init(studentName, suid, email, account_address)
     };
     let jInfo = JSON.stringify(info, null, '  ');
     console.log(jInfo);
-    fs.writeFile(datadir+'/'+'personal.json', jInfo, function(err){
+    fs.writeFile(datadir+'/'+'IDENTITY', jInfo, function(err){
        if(err) {
            console.log(err);
        } else {
-           console.log(datadir+'/personal.json');
+           console.log(datadir+'/IDENTITY');
        }
     });
-    // create log.txt
-    fs.close(fs.openSync(datadir + '/' + 'log.txt', 'w'), function (err) {
+    // create PROOF
+    fs.close(fs.openSync(datadir + '/' + 'PROOF', 'w'), function (err) {
         if(err) {
             console.log(err);
         } else {
-            console.log(datadir+'/'+'log.txt');
+            console.log(datadir+'/'+'PROOF');
         }
     });
 }
@@ -72,27 +69,30 @@ function init(studentName, suid, email, account_address)
 async function submit(filename) {
     try {
         // file esisted or not, extension check, __dirname: get current dir
-        if (!fs.existsSync(__dirname + '/' + filename))
+        if (!fs.existsSync(curDir + '/' + filename))
             throw new Error("file does not exist");
-        let info = fs.readFileSync(datadir + '/' + 'personal.json', 'utf-8');
+        let info = fs.readFileSync(datadir + '/' + 'IDENTITY', 'utf-8');
         let infoObj = JSON.parse(info)
         // retrieve personal info
-        let data = fs.readFileSync(__dirname + '/' + filename, 'utf-8');
+        let data = fs.readFileSync(curDir + '/' + filename, 'utf-8');
         let hashValue = CryptoJS.SHA256(data);
         let hashStr = '0x' + hashValue.toString(CryptoJS.enc.Hex);
         let instance = await getContract();
+        // Submit to current file's hash to blockchain
         let result = await instance.submit(filename, hashStr, {from: infoObj.account_address});
         let record = '' + result.tx + '  ' + hashStr + '\n';
         console.log('Transaction\tFile Hash');
         console.log(record);
-        await fs.appendFile(datadir +'/'+ 'log.txt', record, function (err) {
+        console.log('Your\'ve submit ' + filename+ ', here is your receipt: \n');
+        console.log(result.receipt);
+        fs.appendFile(datadir +'/'+ 'PROOF', record, function (err) {
             if (err) throw err;
         });
     }
     catch (err)
     {
         // if err, process
-        console.log('ERROR: ' + err);
+        console.log('You\'ve already submit this file before');
     }
 }
 
@@ -154,9 +154,9 @@ Uploader.prototype.sendFile = function (file, cb) {
             return;
         }
         // construct msg head
-        if(!fs.existsSync(datadir+'/personal.json'))
+        if(!fs.existsSync(datadir+'/IDENTITY'))
             throw new Error('has to run init first');
-        let dataStream = fs.readFileSync(datadir+'/personal.json');
+        let dataStream = fs.readFileSync(datadir+'/IDENTITY');
         let jsonData = JSON.parse(dataStream);
         let remotePath = jsonData.name + '_' + jsonData.suid;
         justFilename = path.basename(file);
@@ -169,7 +169,7 @@ Uploader.prototype.sendFile = function (file, cb) {
         let fileData = {name: justFilename, path: remotePath+"/"+justFilename};
         this.sending = fileData;
         this.ws.send(JSON.stringify(fileData));
-        let data = fs.readFileSync(__dirname + '/' + file);
+        let data = fs.readFileSync(curDir + '/' + file);
         this.ws.send(data);
     }
     catch(err) {
@@ -181,19 +181,19 @@ Uploader.prototype.close = function () {
     this.ws.close();
 }
 
-// get all files in cur directory
+// traverse working directory
 function traverse(dir, ignore, filelist)
 {
     files = fs.readdirSync(dir);
     filelist = filelist || [];
     files.forEach(function(file) {
-      if (fs.statSync(dir + '/' + file).isDirectory() && ignore.indexOf(file) <= -1) {
-        filelist = traverse(dir + '/' + file, ignore, filelist);
-      }
-      else {
-        if(ignore.indexOf(file) <= -1)
-            filelist.push(dir + '/' + file);
-      }
+        if (fs.statSync(dir + '/' + file).isDirectory() && ignore.indexOf(file) <= -1) {
+            filelist = traverse(dir + '/' + file, ignore, filelist);
+        }
+        else {
+            if(ignore.indexOf(file) <= -1)
+                filelist.push(dir + '/' + file);
+        }
     });
     return filelist;
 }
@@ -203,19 +203,48 @@ function traverse(dir, ignore, filelist)
 // check dsbm.json information, construct message, network config
 function upload() {
     try{
-        //read '.dsbmignore' line by line
-        let ignore;
-        if(fs.existsSync(__dirname + '/' + '.dsbmignore'))
-            ignore = fs.readFileSync(__dirname + '/' + '.dsbmignore', 'utf-8').split('\n').filter(Boolean);
         
-        let files = traverse(__dirname, ignore);
+        //read '.dsbmignore' line by line
+        let ignore = [];
+        if(fs.existsSync(curDir + '/' + '.dsbmignore'))
+            ignore = fs.readFileSync(curDir + '/' + '.dsbmignore', 'utf-8').split('\n').filter(Boolean);
+        
+        // traverse working directory
+        let files = traverse(curDir, ignore);
+
+        // zip up
+        let output = fs.createWriteStream(curDir + '/'+curDir.split(path.sep).pop() +'.zip');
+        let archive = archiver('zip', {
+            zlib: { level: 9 } // Sets the compression level.
+        });
+        // pipe archive data to the file
+        archive.pipe(output);
+
         for(let i=0; i < files.length; i++)
         {
-            if(path.basename(files[i]) !== __dirname.split(path.sep).pop() +'.zip')
-                archive.append(fs.createReadStream(files[i]), {name: path.relative(process.cwd(), files[i])});
+            if(path.basename(files[i]) !== curDir.split(path.sep).pop() +'.zip')
+                archive.append(fs.createReadStream(files[i]), 
+                {name: path.relative(process.cwd(), files[i])});
         }
-        archive.finalize();
 
+        archive.finalize();
+        // 'close' event is fired only when a file descriptor is involved
+        output.on('close', function() {
+            console.log('compressed ' + archive.pointer() + ' total bytes');
+            // upload file to remote server, send zip and .dsbm
+            const zipFile = curDir.split(path.sep).pop() +'.zip';
+            upload_(zipFile);
+            upload_(PROOF);
+            upload_(IDENTITY);
+        });
+
+        output.on('end', function() {
+            console.log('Data has been drained');
+        });
+
+        archive.on('error', function(err) {
+            throw err;
+        });
     }catch(err)
     {
         console.log(err);
@@ -223,11 +252,11 @@ function upload() {
 }
 
 function status(){
-    let ignore;
-    if(fs.existsSync(__dirname + '/' + '.dsbmignore'))
-        ignore = fs.readFileSync(__dirname + '/' + '.dsbmignore', 'utf-8').split('\n').filter(Boolean);
+    let ignore = [];
+    if(fs.existsSync(curDir + '/' + '.dsbmignore'))
+        ignore = fs.readFileSync(curDir + '/' + '.dsbmignore', 'utf-8').split('\n').filter(Boolean);
     
-    let files = traverse(__dirname, ignore);
+    let files = traverse(curDir, ignore);
     for(let i=0; i < files.length; i++)
     {
         console.log('   file: ' + files[i]);
@@ -254,26 +283,6 @@ function upload_(filename)
         console.log('100% done ' + filename + ' sent.');
     };
 }
-
-// 'close' event is fired only when a file descriptor is involved
-output.on('close', function() {
-    console.log('compressed ' + archive.pointer() + ' total bytes');
-    // upload file to remote server, send zip and .dsbm
-    const zipFile = __dirname.split(path.sep).pop() +'.zip';
-    upload_(zipFile);
-    const logFile = '.dsbm/log.txt';
-    const personalFile =  '.dsbm/personal.json';
-    upload_(logFile);
-    upload_(personalFile);
-});
-
-output.on('end', function() {
-    console.log('Data has been drained');
-});
-
-archive.on('error', function(err) {
-    throw err;
-});
 
 module.exports = {init, submit, upload, status, upload_};
 

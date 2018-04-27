@@ -20,11 +20,11 @@ async function getTxn(txnNum){
 	}
 }
 
-// read log file, sync read
-function readLog(log){
+// read PROOF file, sync read
+function readPROOF(PROOF){
 	try{
 		let rst = [];
-		let lines = fs.readFileSync(log, 'utf-8').split('\n');
+		let lines = fs.readFileSync(PROOF, 'utf-8').split('\n');
 		for(let i in lines)
 		{
 			if(lines[i] === '') continue
@@ -38,12 +38,12 @@ function readLog(log){
 	}
 }
 
-// read personal info
-function readInfo(infoFile)
+// read IDENTITY info
+function readIDENTITY(IDENTITY)
 {
 	try{
-		let personData = fs.readFileSync(infoFile, 'utf-8');	
-		return JSON.parse(personData);
+		let IDENTITY_Info = fs.readFileSync(IDENTITY, 'utf-8');	
+		return JSON.parse(IDENTITY_Info);
 	}
 	catch(err)
 	{
@@ -51,36 +51,41 @@ function readInfo(infoFile)
 	}
 }
 
-// verify log data
-async function _verify(log, person)
+// verify PROOF data
+async function _verify(PROOF, IDENTITY)
 {	
 	let verified = true;
 	let report = [];
-	if(log.length === 0 || person === null) return verified;
-	for(let i in log)
+	if(PROOF.length === 0 || IDENTITY === null) return verified;
+	for(let i in PROOF)
 	{
-		let txn = await getTxn(log[i][0]);
-		if(txn === null || txn.from.toUpperCase() !=  person.account_address.toUpperCase() || txn.input.indexOf(log[i][1].slice(2,)) === -1){
+		let txn = await getTxn(PROOF[i][0]);
+		if(txn === null 
+			|| txn.from.toUpperCase() !=  IDENTITY.account_address.toUpperCase() 
+			|| txn.input.indexOf(PROOF[i][1].slice(2,)) === -1)
+			// hash the file, check if it is match the fileHash
+			// get the timestamp
+			{
 			verified = false;
 		}
-		report.push(''+log[i]+'\t'+verified+'\n');
+		report.push(''+PROOF[i]+'\t'+verified+'\n');
 	}
 	return report;	
 }
 
 // verify
-async function verify(logFile, infoFile)
+async function verify(PROOF, IDENTITY)
 {
-	// read log.txt
-	let logData = readLog(logFile);
-	// read personal info file
-	let person = readInfo(infoFile);
-	let report = await _verify(logData, person);
+	// read PROOF
+	let PROOFData = readPROOF(PROOF);
+	// read IDENTITY info file
+	let IDENTITYData = readIDENTITY(IDENTITY);
+	let report = await _verify(PROOFData, IDENTITYData);
 	console.log(report)
 }
 
 // ------<test>-----
-verify('log.txt', 'personal.json')
+verify('PROOF', 'IDENTITY')
 
 //module.exports = verify
 

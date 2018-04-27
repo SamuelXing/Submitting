@@ -37,7 +37,7 @@ async function getBlockContent(blockNum)
 
 router.get('/:blockId', async function(req, res, next){
 	let blockId = req.params.blockId;
-	let latest = await getLatestBlockNumber();
+	let latest = await web3.eth.getBlockNumber();
 	// if block numer greater than the highest
     if(blockId > latest){
 	   res.render('bck_detail', {message: {
@@ -53,12 +53,12 @@ router.get('/:blockId', async function(req, res, next){
 					block: {}});
 	}
 	else{
-		let block = await getBlockContent(blockId);	
+		let block = await web3.eth.getBlock(blockId);	
 		res.render('bck_detail', {message: {
 					valid: true, 
 					msg: "valid"},
 					block: block});
-		}
+	}
 });
 
 router.get('/', function(req, res, next){
