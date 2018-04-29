@@ -48,15 +48,12 @@
         // TODO: bind column
         $(nRow).bind("click", function(e){
             $.get('/admin/files?path='+ path).then(function(data){
-                let cond1 = false;
-                let cond2 = false;
+                let cond = false;
                 for(let i=0; i < data.length; i++)
                 {
-                    if(data[i].Name === 'log.txt') cond1 = true;
-                    if(data[i].Name === 'personal.json') cond2 = true;
+                    if(data[i].Name === '.dsbm') cond = true;
                 }
-                // console.log('cond1 '+ cond1 + ' cond2 '+ cond2);
-                if(cond1 && cond2) { $('.verify').show(); }
+                if(cond) { $('.verify').show(); }
                 else{ $('.verify').removeAttr("style").hide(); }
                 table.fnClearTable();
                 table.fnAddData(data);
@@ -122,15 +119,12 @@
         var idx = currentPath.lastIndexOf("/");
         var path =currentPath.substr(0, idx);
         $.get('/admin/files?path='+ path).then(function(data){
-            let cond1 = false;
-            let cond2 = false;
+            let cond = false;
             for(let i=0; i < data.length; i++)
             {
-                if(data[i].Name === 'log.txt') cond1 = true;
-                if(data[i].Name === 'personal.json') cond2 = true;
+                if(data[i].Name === '.dsbm') cond = true;
             }
-            // console.log('cond1 '+ cond1 + ' cond2 '+ cond2);
-            if(cond1 && cond2) { $('.verify').show(); }
+            if(cond) { $('.verify').show(); }
             else{ $('.verify').removeAttr("style").hide(); }
             table.fnClearTable();
             table.fnAddData(data);
@@ -139,10 +133,12 @@
     });
 
     $(".verify").bind("click", function(e){
-        $.get('/admin/verify').then(function(data){
-            console.log(data);
+        if (!currentPath) return;
+        var idx = currentPath.lastIndexOf("/");
+        $.get('/admin/verify?path='+ currentPath).then(function(data){
+            table.fnClearTable();
+            table.fnAddData(data);
         })
     });
-
 })(jQuery);
 

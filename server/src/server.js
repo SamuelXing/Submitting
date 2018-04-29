@@ -76,7 +76,6 @@ wss.on('connection', function (ws) {
 
     let filesReceived = 0;
     let currentFile = null;
-    //on connect message
     ws.on('message', function (data) {
         if (typeof data === 'string') {
             currentFile = JSON.parse(data);
@@ -155,9 +154,15 @@ app.use(function(req, res, next){
 //router
 routes(app);
 
-server.listen(config.port, function () {
-    console.log('Listening on http://localhost:8080');
-    console.log('Uploaded files will be saved to %s/uploaded.', __dirname);
+fs.mkdir(path.join(__dirname, '/uploaded'), function () {
+    // ignore errors, most likely means directory exists
+    server.listen(config.port, function () {
+        console.log('Listening on http://localhost:8080');
+        console.log('Uploaded files will be saved to %s/uploaded.', __dirname);
+    });
 });
+
+
+
 
 
