@@ -21,13 +21,12 @@ if (typeof Web3 !== 'undefined') {
 	var Web3 = new web3(new web3.providers.HttpProvider("http://localhost:8550"));
 }
 
-let provider = new web3.providers.HttpProvider("http://127.0.0.1:8550");
-let sc = new contract(require("./build/contracts/SubmitContract.json"));
-
+const provider = new web3.providers.HttpProvider("http://127.0.0.1:8550");
+const sc = new contract(require("./build/contracts/SubmitContract.json"));
 sc.setProvider(provider);
 
 async function getContract() {
-    return await sc.deployed()
+    return await sc.deployed();
 }
 
 
@@ -66,18 +65,13 @@ function init(studentName, suid, email, account_address)
             console.log(datadir+'/'+'PROOF');
         }
     });
-    // create History dir
-    if (!fs.existsSync(datadir + '/' + 'History')){
-        fs.mkdirSync(datadir + '/' + 'History');
-        console.log(datadir + '/' + 'History');
-    }
 }
 
 
 //check hash value, error check, zip(option),
 async function submit(filename) {
     try {
-        // file esisted or not, extension check, __dirname: get current dir
+        // file esisted or not
         if (!fs.existsSync(curDir + '/' + filename))
             throw new Error("file does not exist");
         let info = fs.readFileSync(datadir + '/' + 'IDENTITY', 'utf-8');
@@ -86,18 +80,15 @@ async function submit(filename) {
         let data = fs.readFileSync(curDir + '/' + filename, 'utf-8');
         let hashValue = CryptoJS.SHA256(data);
         let hashStr = '0x' + hashValue.toString(CryptoJS.enc.Hex);
-        let instance = await getContract();
+        // get an instance of smart contract
+        let instance = await sc.deployed();;
         // Submit to current file's hash to blockchain
-        let result = await instance.submit(filename, hashStr, {from: infoObj.account_address});
-        let record = '' + result.tx + '  ' + hashStr + '\n';
-        console.log('Transaction\tFile Hash');
+        let result = await instance.submit(filename, hashStr, 
+            {from: infoObj.account_address});
+        let record = '' + result.tx + '  '+ filename +'  ' + hashStr + '\n';
+        console.log('Transaction\tFilename\tFile Hash');
         console.log(record);
-        // Save history version locally
-        let block = await Web3.eth.getBlock(result.receipt.blockNumber);
-        let timestamp = block.timestamp;
-        console.log('Save history version: ' + datadir + '/History/'+ timestamp+'_'+filename+'\n');
-        fs.createReadStream(filename).pipe(fs.createWriteStream(datadir + '/History/'+ timestamp+'_'+filename));
-        console.log('Your\'ve submit ' + filename+ ', here is your receipt: \n');
+        console.log('You\'ve submit ' + filename+ ', here is your receipt: \n');
         console.log(result.receipt);
         // append new record to PROOF
         fs.appendFile(datadir +'/'+ 'PROOF', record, function (err) {

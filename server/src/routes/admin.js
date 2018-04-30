@@ -17,24 +17,10 @@ if (typeof web3 !== 'undefined') {
 
 const IDENTITY = "IDENTITY";
 const PROOF = "PROOF";
-const Histoy = "History";
 
 const isAdmin = require('../middlewares/check').isAdmin;
 
 const dir  = path.join(__dirname, '../uploaded');
-// traverse working directory
-function traverse(dir, map)
-{
-    files = fs.readdirSync(dir);
-    map = map || new Map();
-    files.forEach(function(file) {
-        if (!fs.statSync(dir + '/' + file).isDirectory()) {
-			let timestamp_filename = file.split(/(_)/);
-            map.set(timestamp_filename[0], file);
-        }
-    });
-    return map;
-}
 
 // read PROOF file, sync read
 function readPROOF(PROOF){
@@ -67,13 +53,12 @@ function readIDENTITY(IDENTITY)
 	}
 }
 
-// verify PROOF data
-async function _verify(PROOF, IDENTITY, TF_MAP, path)
+// verify PROOF
+async function _verify(PROOF, IDENTITY, path)
 {	
 	try{
 		let verified = true;
-        // create report file, HERE
-        console.log(path+'/../report.txt');
+        // create report file
 		let report = fs.createWriteStream(path+'/../report.txt', {
 			flags: 'a' // 'a' means appending (old data will be preserved)
 		});
@@ -81,31 +66,19 @@ async function _verify(PROOF, IDENTITY, TF_MAP, path)
 		for(let i in PROOF)
 		{
 			let txn = await web3.eth.getTransaction(PROOF[i][0]); // PROOF[i][0] is txnHash
-			// make sure data is authentic
+			// verify data is authentic
 			if(txn === null 
 				|| txn.from.toUpperCase() !=  IDENTITY.account_address.toUpperCase() 
-				|| txn.input.indexOf(PROOF[i][1].slice(2,)) === -1){ 
+				|| txn.input.indexOf(PROOF[i][2].slice(2,)) === -1){ 
                     // fileHash has logged to blockchain
 				verified = false;
 			}
 			// get timestamp,
 			let block = await web3.eth.getBlock(txn.blockNumber);
 			let timestamp = block.timestamp;
-			// get filename based on timestamp
-			let filename = TF_MAP.get(timestamp.toString());
-			if(filename == 'undefined') verified = false;
-			// hash the file locally from server
-			let data = fs.readFileSync(path + '/' + Histoy + '/' + filename, 'utf-8');
-			let hashValue = CryptoJS.SHA256(data);
-			let hashStr = hashValue.toString(CryptoJS.enc.Hex);
-			// hash the file, check if it is match the fileHash 
-			// proof that it is indeed the file you submitted at that time 
-			if(txn.input.indexOf(hashStr) === -1){
-				verified = false;
-			}
 			// convert timestamp to human readable date
 			let date = new Date(timestamp*1000).toUTCString();
-			report.write(date + ', submit ' + filename + ', verified: ' + verified+'\n');
+			report.write(date + ', submit ' + PROOF[i][1] + ', verified: ' + verified+'\n');
 		}
 		report.end();
 		return;
@@ -120,8 +93,7 @@ async function verify(path)
 {
 	try{
 		if(!fs.existsSync(path + '/' + IDENTITY) 
-		|| !fs.existsSync(path + '/' + PROOF)
-		|| !fs.existsSync(path + '/' + Histoy))
+		|| !fs.existsSync(path + '/' + PROOF))
 		{
 			throw new Error('lack of key files, cannot verify');
 		}
@@ -129,10 +101,8 @@ async function verify(path)
 		let PROOFData = readPROOF(path + '/' + PROOF);
 		// read IDENTITY info file
 		let IDENTITYData = readIDENTITY(path + '/' + IDENTITY);
-		// {timestamp, filename} map
-		let tf_map = traverse(path + '/' + Histoy);
 		// verify
-		await _verify(PROOFData, IDENTITYData, tf_map, path);
+		await _verify(PROOFData, IDENTITYData, path);
 	}
 	catch(err)
 	{
@@ -168,7 +138,6 @@ router.get('/files', function(req, res) {
          })
          .forEach(function (file) {
            try {
-                //console.log("processing ", file);
                 let isDirectory = fs.statSync(path.join(currentDir,file)).isDirectory();
                 let mtime = fs.statSync(path.join(currentDir,file)).mtime;
                 let birthtime =  fs.statSync(path.join(currentDir,file)).birthtime;
@@ -206,7 +175,6 @@ router.get('/verify', function(req, res, next){
          })
          .forEach(function (file) {
            try {
-                //console.log("processing ", file);
                 let isDirectory = fs.statSync(path.join(currentDir,file)).isDirectory();
                 let mtime = fs.statSync(path.join(currentDir,file)).mtime;
                 let birthtime =  fs.statSync(path.join(currentDir,file)).birthtime;
