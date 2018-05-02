@@ -13,55 +13,30 @@ program
     .description('Client Side for a decentralized course-project submitting system')
 
 // start node - setup account - migrate contract
-// create a directory to keep the (transaction, hash) pair
-// data cannot be empty
 program
     .command('init <name> <suid> <email> <account_address>')
-    .description('Init envrionment')
+    .description('init envrionment')
     .action((name, suid, email, account_address) => {
        init(name, suid, email, account_address);
-    })
-    .parse(process.argv);
-
-program
-    .command('create <project>')
-    .description('Creat an empty project');
-
-program
-    .command('readme')
-    .description('Check readme doc');
-
-program
-    .command('peer')
-    .description('check the peer info');
+    });
 
 program
     .command('submit <filename>')
-    .description('submit file')
-    .action((filename) => {submit(filename)})
-    .parse(process.argv);
-
-program
-    .command('reset <name>')
-    .description('reset options');
-
-program
-    .command('status')
-    .description('check current status')
-    .action(() => {status()});
+    .description('submit to blockchain')
+    .action((filename) => {submit(filename)});
 
 program
     .command('upload')
-    .description('upload file to server')
+    .description('upload project to server')
     .action(() => {upload()});
 
-program
-    .command('sendFile')
-    .description('send a file to server')
-    .action((filename) => {upload_(filename)});
+ program
+    .command('status')
+    .description('check project\'s current status')
+    .action(() => {status()});
 
 program
-    .command('start')
-    .description('start app');
+    .command('readme')
+    .description('check readme doc');
 
 program.parse(process.argv);

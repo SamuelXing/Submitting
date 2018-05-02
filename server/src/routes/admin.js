@@ -66,11 +66,10 @@ async function _verify(PROOF, IDENTITY, path)
 		for(let i in PROOF)
 		{
 			let txn = await web3.eth.getTransaction(PROOF[i][0]); // PROOF[i][0] is txnHash
-			// verify data is authentic
-			if(txn === null 
-				|| txn.from.toUpperCase() !=  IDENTITY.account_address.toUpperCase() 
+			// verify the ownership of this transaction
+            if(txn.from.toUpperCase() !=  IDENTITY.account_address.toUpperCase() 
+                // fileHash has logged to blockchain
 				|| txn.input.indexOf(PROOF[i][2].slice(2,)) === -1){ 
-                    // fileHash has logged to blockchain
 				verified = false;
 			}
 			// get timestamp,
