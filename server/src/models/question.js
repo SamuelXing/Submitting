@@ -63,15 +63,24 @@ module.exports = {
                         .exec();
     },
 
+    // get questions by authorId
+    getQuestionsByAuthor: function getQuestions(author)
+    {
+        return Question.find({author: author})
+                        .populate({path:'author', model: 'User'})
+                        .sort({_id: -1})
+                        .contentToHtml()
+                        .exec();
+    },
+
     // get all questions
-    getQuestions: function getQuestions(author)
+    getAllQuestions: function getQuestions(author)
     {
         let query = {};
         if(author)
         {
             query.author = author;
         }
-
         return Question.find(query)
                         .populate({path:'author', model: 'User'})
                         .sort({_id: -1})

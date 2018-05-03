@@ -16,14 +16,16 @@
                     <%= question.title %>
                 </p>
                 <p style="float:right">
+                    <span class="box"><%= question.pv %> Views</span>&nbsp&nbsp
                     <strong id="questionVal">
                         <% if(!question.receipt){ %>
-                            0 Eth
+                            0 
                         <% } else { %>
-                            <%= Number(question.value)/1000000000000000000 %> Eth
+                            <%= Number(question.value)/1000000000000000000 %>
                         <% } %>
-                    </strong>
-                    <strong>,&nbsp&nbsp<%= question.pv %> Views</strong></p>
+                        &nbsp<img src="/img/ethereum.svg" class="img-responsive" alt="user" style="width: 20px;float:right;margin-top:3px; margin-left: 5px;">
+                </strong>
+                </p>
             </div>
             <div style="clear:both;">
                 <p>
@@ -33,14 +35,14 @@
                     <% if(user._id == question.author._id){ %>
                         <% if(question.receipt){ %>
                         <p style="float:right; margin-top:15px;">
-                            <button id = "bid" class="btn btn-default" disabled>I wanna pay for asking</button>
+                            <button id = "bid" class="btn btn-default" disabled>Pay for asking</button>
                         </p>
                         <% }else{ %>
                         <div style="display: none;" id="user-account"><%= user.account %></div>
                         <p style="float:right; margin-top:15px;">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" id="payforit">
-                                I wanna pay for asking
+                                Pay for asking
                             </button>
                        </p>
                        <% } %>

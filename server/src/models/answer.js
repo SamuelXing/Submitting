@@ -41,6 +41,17 @@ module.exports = {
                     .exec();
     },
 
+    // get all questions
+    getAnswersByAuthor: function getAnswersByAuthor(author)
+    {
+        return  Answer.find({author: author})
+                    .populate({path:'author', model: 'User'})
+                    .populate({path:'questionId', model: 'Question'})
+                    .sort({_id: -1})
+                    .contentToHtml()
+                    .exec();
+    },
+
     // get answer numbers
     getAnswersCount: function getAnswerCount(questionId)
     {

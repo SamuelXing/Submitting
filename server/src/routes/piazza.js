@@ -28,7 +28,7 @@ const AnswerModel = require('../models/answer');
 
 // GET /piazza?author = xxx
 router.get('/', function(req, res, next){
-    QuestionModel.getQuestions("").then(function(questions){
+    QuestionModel.getAllQuestions("").then(function(questions){
         req.session.questions = questions;
         res.render('piazza', {questions: questions});
     }).catch(next);
@@ -77,19 +77,18 @@ router.post('/', checkLogin, function(req, res, next){
 
 // GET /piazza/create
 router.get('/create', checkLogin, async function(req, res, next){
-    const questions = await QuestionModel.getQuestions("");
+    const questions = await QuestionModel.getAllQuestions("");
     res.render('create', {questions: questions});
 });
 
 // GET /piazza/:questionID
 router.get('/:questionId',async function(req, res, next){
     const questionId = req.params.questionId;
-    const questions = await QuestionModel.getQuestions("");
+    const questions = await QuestionModel.getAllQuestions("");
     Promise.all([
         QuestionModel.getQuestionById(questionId),
         AnswerModel.getAnswers(questionId),
-        QuestionModel.incPv(questionId)
-        
+        QuestionModel.incPv(questionId) 
     ])
     .then(function(result){
         const question = result[0];
@@ -132,10 +131,6 @@ router.get('/:questionId/comment/:commentId/edit', checkLogin, function(req, res
     res.send('dummy');
 });
 
-// GET ajax test
-router.get('/api/upvote', checkLogin, function(req, res, next){
-    res.send('dummy');
-})
 
 // POST /piazza/api/upvote
 router.post('/api/upvote/:answerId', checkLogin, async function(req, res, next){
