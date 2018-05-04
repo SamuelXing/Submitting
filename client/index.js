@@ -14,10 +14,10 @@ program
 
 // start node - setup account - migrate contract
 program
-    .command('init <name> <suid> <email> <account_address>')
+    .command('init <name> <email> <suid> <account_address>')
     .description('init envrionment')
-    .action((name, suid, email, account_address) => {
-       init(name, suid, email, account_address);
+    .action((name, email, suid,  account_address) => {
+       init(name, email, suid,  account_address);
     });
 
 program

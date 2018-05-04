@@ -500,7 +500,7 @@ h3.heading-xs {
 
 .overflow
 { 
-  width: 100px; 
+  width: 300px; 
   overflow:hidden;
   white-space:nowrap;  
 } 

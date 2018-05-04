@@ -33,7 +33,7 @@ async function getContract() {
 // init the environment
 // create a json file that hold the description info for the dsbm
 // configuration parameter - and validate
-function init(studentName, suid, email, account_address)
+function init(studentName, email, suid, account_address)
 {
     // create data dir,
     if(!fs.existsSync(datadir))

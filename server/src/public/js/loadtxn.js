@@ -27,10 +27,10 @@ var LoadingData = function() {
             {
                 dom += `
                 <tr>
-                    <td class="overflow"><a href="/transactions/`+ txns[i].hash+`">`+ txns[i].hash +`</a></td>
+                    <td><p class="overflow"><a href="/transactions/`+ txns[i].hash+`">`+ txns[i].hash +`</a></p></td>
                     <td><a href="/blocks/`+ txns[i].blockNumber+`">`+ txns[i].blockNumber +`</td>
-                    <td class="overflow">`+ txns[i].from +`</td>
-                    <td class="overflow">`+ txns[i].to + `</td>
+                    <td><p class="overflow">`+ txns[i].from +`</p></td>
+                    <td><p class="overflow">`+ txns[i].to + `</p></td>
                     <td>`+ Number(txns[i].value)/1000000000000000000 +`Ether </a></td>
                 </tr>
                 `;
