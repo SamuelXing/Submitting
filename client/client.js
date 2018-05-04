@@ -15,13 +15,13 @@ const datadir = process.cwd() + '/.dsbm';
 
 // set provider
 if (typeof Web3 !== 'undefined') {
-	var Web3 = new web3(web3.currentProvider);
+	Web3 = new web3(web3.currentProvider);
 } else {
 	// set the provider you want from Web3.providers
-	var Web3 = new web3(new web3.providers.HttpProvider("http://localhost:8550"));
+	Web3 = new web3(new web3.providers.HttpProvider("http://127.0.0.1:8545"));
 }
 
-const provider = new web3.providers.HttpProvider("http://127.0.0.1:8550");
+const provider = new web3.providers.HttpProvider("http://127.0.0.1:8545");
 const sc = new contract(require("./build/contracts/SubmitContract.json"));
 sc.setProvider(provider);
 
@@ -67,16 +67,17 @@ function init(studentName, suid, email, account_address)
     });
 }
 
-
 //check hash value, error check, zip(option),
-async function submit(filename) {
+async function submit(filename, password) {
     try {
         // file esisted or not
         if (!fs.existsSync(curDir + '/' + filename))
             throw new Error("file does not exist");
+        // retrieve personal info
         let info = fs.readFileSync(datadir + '/' + 'IDENTITY', 'utf-8');
         let infoObj = JSON.parse(info)
-        // retrieve personal info
+        let response = await Web3.personal.unlockAccount(infoObj.account_address, password, 600);
+        // read submitted file content
         let data = fs.readFileSync(curDir + '/' + filename, 'utf-8');
         let hashValue = CryptoJS.SHA256(data);
         let hashStr = '0x' + hashValue.toString(CryptoJS.enc.Hex);

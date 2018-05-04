@@ -20,8 +20,6 @@ async function getBalance(account)
     {
         if(account == 'undefined' || account == null) return 0;
         let balance = await web3.eth.getBalance(account);
-        console.log(account);
-        console.log(balance);
         return balance;
     }catch(err)
     {

@@ -32,8 +32,8 @@
     "commander": "^2.13.0",
     "moment": "^2.22.1",
     "truffle": "^4.0.5",
-    "truffle-contract": "^3.0.2",
-    "web3": "^0.20.4",
+    "truffle-contract": "^3.0.5",
+    "web3": "^0.20.6",
     "ws": "^4.0.0"
   },
   "devDependencies": {

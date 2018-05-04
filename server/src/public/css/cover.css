@@ -386,7 +386,7 @@ h3.heading-xs {
 {
   border: 1px solid #fff;
   margin-top: 5px;
-  width: 90%;
+  width: 98%;
 }
 
 .question-shortcut .panel-heading
@@ -453,6 +453,7 @@ h3.heading-xs {
   padding-right: 10px;
   border: 1px solid #fff;
   margin-top: 10px;
+  border-radius: 5px;
 }
 
 .answer-content
@@ -606,4 +607,10 @@ h3.heading-xs {
   color: #333;
   background-color: #bbd;
   border-radius: 5px;
+}
+
+.like {
+  float: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }

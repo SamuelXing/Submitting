@@ -75,12 +75,25 @@ $('.upvote').click(function(){
         url: '/piazza/api/upvote/'+id,
         success: function(response) {
             $("#"+id).html(response); 
-            setTimeout(function(){
-                location.reload();
-            },2000);
         },
         error: function(response) {
             alert('you have voted');
+        }
+    })
+});
+
+$(".liked").click(function(){
+    var id = $(this).children('#id').html();
+    console.log(id);
+    $.ajax({
+        type: 'POST',
+        async: false,
+        url: '/piazza/api/reward/'+id,
+        success: function(response) {
+            alert('student has been rewarded with 10 ether coin');
+        },
+        error: function(response) {
+            alert('error');
         }
     })
 });

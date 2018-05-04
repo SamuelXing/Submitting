@@ -9,6 +9,7 @@ if (typeof web3 !== 'undefined') {
 	// set the provider you want from Web3.providers
 	var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 }
+const adminAccount = "0x7949cbab5bb23342a90e87da70ef20534c6e7c4b";
 
 async function getTxn(txnHash)
 {
@@ -119,7 +120,6 @@ router.post('/:questionId/answer', checkLogin, function(req, res, next){
         votes: 0,
         closed: 1
    };
-
    AnswerModel.create(answer).then(function(){
        res.redirect('back');
    }).catch(next);
@@ -144,36 +144,10 @@ router.post('/api/upvote/:answerId', checkLogin, async function(req, res, next){
     {
         const answer = await AnswerModel.getAnswerById(req.params.answerId);
         // get post
-        const question = await QuestionModel.getQuestionById(answer.questionId._id);
-        if(answer.questionId.author == req.session.user._id && question.solved != 1 && question.value != 0)
-        {
-            const toAddress = answer.author.account;
-            const fromAddress = "0x7949cbab5bb23342a90e87da70ef20534c6e7c4b";
-            const value = question.value;
-            // TODO: unlock account, read passphrase file
-            // transfer money
-            web3.eth.sendTransaction({from: fromAddress, to: toAddress, value: value},
-                async function(err, transactionHash){
-                    if(err)
-                    {
-                        console.log(err);
-                        // internal error response
-                        res.send('internal error');
-                    }
-                    else
-                    {
-                        console.log("server transfer receipt:" + transactionHash);
-                        // make this question solved
-                        await AnswerModel.updateChoosed(answer._id, transactionHash);
-                        // update question status
-                        await QuestionModel.updateSolvedByQuestionId(answer.questionId._id);
-                    }
-                });
-        }
+        const question = await QuestionModel.getQuestionById(answer.questionId._id); 
         /// update vote
         await AnswerModel.upvote(req.params.answerId);
         await AnswerModel.addVoter(req.params.answerId, req.session.user._id);
-        
         AnswerModel.getAnswerById(req.params.answerId).then(function(answer){
             res.send(''+answer.votes);
         });
@@ -198,6 +172,27 @@ router.post('/api/pay', checkLogin, async function(req, res, next){
         res.contentType('json');
         res.status(200).send(JSON.stringify({data: value}));
     }); 
+})
+
+// POST /piazza/api/:questionId/pay
+router.post('/api/reward/:answerId', checkLogin, async function(req, res, next){
+    const answer = await AnswerModel.getAnswerById(req.params.answerId);
+    web3.eth.sendTransaction({from: adminAccount, to: answer.author.account, value: web3.utils.toWei('10', 'ether')},
+        async function(err, transactionHash){
+            if(err)
+            {
+                console.log(err);
+                res.send('internal error');
+            }
+            else
+            {
+                console.log("server transfer receipt: " + transactionHash);
+                // make this question solved
+                await AnswerModel.updateChoosed(answer._id,transactionHash);
+                res.contentType('json');
+                res.status(200).send(JSON.stringify({data: answer.author.username}));
+            }
+        });
 })
 
 module.exports = router;

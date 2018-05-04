@@ -23,7 +23,12 @@ program
 program
     .command('submit <filename>')
     .description('submit to blockchain')
-    .action((filename) => {submit(filename)});
+    .action(function(filename){
+        co(function *() {
+            let password = yield prompt.password('password: ');
+            submit(filename, password);
+        });
+    });
 
 program
     .command('upload')

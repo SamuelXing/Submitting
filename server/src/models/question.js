@@ -86,7 +86,6 @@ module.exports = {
                         .sort({_id: -1})
                         .addCreatedAt()
                         .addAnswersCount()
-                        .contentToHtml()
                         .exec();
     },
 
