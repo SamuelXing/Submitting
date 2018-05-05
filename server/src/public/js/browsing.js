@@ -85,7 +85,7 @@
         },
         { "sTitle": "Operations", "mData": null, "bSortable": false, "sClass": "head0",
             "render": function (data, type, row, meta) {
-                if(!data.IsDirectory)
+                if(!data.IsDirectory && data.Name != ".DS_Store")
                 {
                     return `
                     <div class="btn-group" role="group">
